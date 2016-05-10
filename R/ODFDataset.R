@@ -4,10 +4,11 @@
 ODFDataset <- R6::R6Class("ODFDataset",
                           public = list(
                             content_provider = NULL,
+                            data = NULL,
+                            facets = NULL,
+                            fields = NULL,
                             id = NULL,
                             info = NULL,
-                            fields = NULL,
-                            facets = NULL,
                             sortables = NULL,
                             url = NULL,
                             initialize = function(content_provider, id){
@@ -32,7 +33,8 @@ ODFDataset <- R6::R6Class("ODFDataset",
                               self$sortables <- get_sortables(self$fields)
                             },
                             get = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
-                              get_records(content_provider = self$content_provider, id = self$id, nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
+                              self$data <- get_records(content_provider = self$content_provider, id = self$id, nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
+                              self$data
                             },
 
                             print = function() {
