@@ -3,7 +3,7 @@
 #' @export
 ODFDataset <- R6::R6Class("ODFDataset",
                           public = list(
-                            content_provider = NULL,
+                            domain = NULL,
                             data = NULL,
                             facets = NULL,
                             fields = NULL,
@@ -11,10 +11,10 @@ ODFDataset <- R6::R6Class("ODFDataset",
                             info = NULL,
                             sortables = NULL,
                             url = NULL,
-                            initialize = function(content_provider, id){
-                              raw_data <- get_dataset(content_provider, id)
+                            initialize = function(domain, id){
+                              raw_data <- get_dataset(domain, id)
 
-                              self$content_provider <- content_provider
+                              self$domain <- domain
                               self$id <- id
 
                               self$url <- raw_data$url
@@ -33,11 +33,12 @@ ODFDataset <- R6::R6Class("ODFDataset",
                               self$sortables <- get_sortables(self$fields)
                             },
                             get = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
-                              self$data <- get_records(content_provider = self$content_provider, id = self$id, nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
+                              self$data <- get_records(domain = self$domain, id = self$id, nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
                               self$data
                             },
 
                             print = function() {
+                              cat("ODFDataset object\n")
                               cat("--------------------------------------------------------------------\n")
                               cat(paste("Dataset id:", self$id, "\n"))
                               cat(paste("Theme:", self$info$meta$theme, "\n"))
@@ -45,6 +46,7 @@ ODFDataset <- R6::R6Class("ODFDataset",
                               cat(paste("Provider:", self$info$meta$publisher, "\n"))
                               cat("--------------------------------------------------------------------\n")
                               cat(paste("Number of records:", self$info$meta$records_count, "\n"))
+                              cat(paste("Number of files:", length(self$info$attachments), "\n"))
                               cat(paste("Modified:", as.Date(self$info$meta$modified), "\n"))
                               if (!is.null(self$facets)) cat(paste("Facets:", paste(self$facets, collapse = ", "), "\n"))
                               if (!is.null(self$sortables)) cat(paste("Sortables:", paste(self$sortables, collapse = ", "), "\n"))
