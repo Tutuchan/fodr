@@ -1,20 +1,20 @@
-# Get content domain url
-get_domain_url <- function(domain, endpoint){
-  stopifnot(domain %in% domains()$domains)
-  paste0(get_base_url(domain), "/api/", endpoint, "/1.0/")
+# Get content provider url
+get_provider_url <- function(provider, endpoint){
+  stopifnot(provider %in% providers()$providers)
+  paste0(get_base_url(provider), "/api/", endpoint, "/1.0/")
 }
 
 # Get datasets data
-get_datasets <- function(domain, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
-  url <- get_domain_url(domain, "datasets") %>%
+get_datasets <- function(provider, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
+  url <- get_provider_url(provider, "datasets") %>%
     paste0("search/") %>%
     add_parameters_to_url(nrows, refine, exclude, sort, q, lang)
   list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
 }
 
 # Get dataset meta data
-get_dataset <- function(domain, id) {
-  url <- get_domain_url(domain, "datasets") %>%
+get_dataset <- function(provider, id) {
+  url <- get_provider_url(provider, "datasets") %>%
     paste0(id, "/")
   list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
 }
@@ -37,44 +37,22 @@ get_sortables <- function(fields){
   }) %>% unlist()
 }
 
-# Get dataset records
-get_records <- function(domain, id, nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon) {
-  url <- get_domain_url(domain, "records") %>%
-    paste0("search?dataset=", id) %>%
-    add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
-
-
-  res <- jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE) %$%
-    records
-
-  tidy_geom_xy <- function(x) {
-    lapply(x, function(xx) list(x = xx[[1]], y = xx[[2]]))
-  }
-
-  tidy_geom <- function(x) {
-    lapply(x, function(xx) {
-      setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
-        purrr::transpose() %>%
-        dplyr::bind_rows()
-    })
-  }
-
-  out <- if (length(res) > 0) {
-    fields <- res %>%
-      purrr::transpose() %$%
-      fields %>%
-      purrr::transpose()
-
-    if ("geom" %in% names(fields)) fields$geom <- tidy_geom(fields$geom)
-    if ("geom_x_y" %in% names(fields)) fields$geom_x_y <- tidy_geom_xy(fields$geom_x_y)
-
-    c(fields[!names(fields) %in% c("geom", "geom_x_y")] %>% lapply(unlist), fields[names(fields) %in% c("geom", "geom_x_y")]) %>%
-      dplyr::tbl_df()
-  } else dplyr::data_frame()
-
-  list(data = out, url = url)
+# Transform the geom_x_y column
+tidy_geom_xy <- function(x) {
+  lapply(x, function(xx) list(x = xx[[1]], y = xx[[2]]))
 }
 
+# Transform the geom column
+tidy_geom <- function(x) {
+  lapply(x, function(xx) {
+    setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
+      purrr::transpose() %>%
+      dplyr::bind_rows()
+  })
+}
+
+
+# Add additional parameters to the url
 add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
                                   lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
   if (all(is.null(nrows),
@@ -131,19 +109,19 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
 
 
 # Constants
-domains <- function(){
-  dplyr::data_frame(domains = c("ratp",
-                                "iledefrance",
-                                "infogreffe",
-                                "toulouse",
-                                "star",
-                                "issy",
-                                "stif",
-                                "paris",
-                                "04",
-                                "62",
-                                "92",
-                                "enesr"),
+providers <- function(){
+  dplyr::data_frame(providers = c("ratp",
+                                  "iledefrance",
+                                  "infogreffe",
+                                  "toulouse",
+                                  "star",
+                                  "issy",
+                                  "stif",
+                                  "paris",
+                                  "04",
+                                  "62",
+                                  "92",
+                                  "enesr"),
                     base_urls = c("http://data.ratp.fr",
                                   "http://data.iledefrance.fr",
                                   "http://datainfogreffe.fr",
@@ -158,9 +136,9 @@ domains <- function(){
                                   "http://data.enseignementsup-recherche.gouv.fr"))
 }
 
-get_base_url <- function(domain){
-  domains() %>%
-    dplyr::filter(domains == domain) %$%
+get_base_url <- function(provider){
+  providers() %>%
+    dplyr::filter(providers == provider) %$%
     base_urls
 }
 
