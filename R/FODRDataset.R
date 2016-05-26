@@ -9,7 +9,18 @@
 #' @field provider a character, must be one of the available providers
 #' @field data a data.frame returned by the \code{\link[=dataset_get]{get}} method
 #' @field fields a character vector
-#' @field facets a character vector or variables that can be used to f
+#' @field facets a character vector or variables that can be used to filter results
+#' @field id a character, the dataset id
+#' @field info a list of five elements:
+#' \itemize{
+#'  \item features: a character vector of available services on this dataset, \emph{unused}
+#'  \item metas: a list of meta-information about the dataset (publisher, language, theme, etc.)
+#'  \item attachments: a list of downloadable files related to this dataset, if any, \emph{not downloadable from R}
+#'  \item alternative_exports: \emph{unknown purpose}
+#'  \item billing_plans: \emph{unknown purpose}
+#' }
+#' @field sortables a character vector containing a subset of \strong{fields}, indicates on which fields sorting is allowed
+#' @field url a character, the actual url sent to the API
 #' @return An object of class \code{\link{FODRDataset}} with methods designed to retrieve data from an open dataset.
 #' #' @section Methods:
 #' \describe{
@@ -38,10 +49,7 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                self$info$features <- unlist(dataset$features)
                                dataset$metas$keywords <- unlist(dataset$metas$keyword)
                                dataset$metas$keyword <- NULL
-                               self$info$meta <- dataset$metas
-                               self$info$attachments <- dataset$attachments
-                               self$info$alternative_exports <- dataset$alternative_exports
-                               self$info$billing_plans <- dataset$billing_plans
+                               self$info <- c(self$info, dataset[c("metas", "attachments", "alternative_exports", "billing_plans")])
                                self$fields <- dataset$fields
                                self$facets <- get_facets(self$fields)
                                self$sortables <- get_sortables(self$fields)

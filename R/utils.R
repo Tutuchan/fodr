@@ -25,7 +25,9 @@ get_facets <- function(fields){
       annotations <- field$annotations
       res <- lapply(annotations, function(annotation) {
         annotation$name == "facet"
-      }) %>% unlist() %>% any()
+      }) %>%
+        unlist() %>%
+        any()
       if (res) field$name else NULL
     }
   }) %>% unlist()
@@ -95,8 +97,8 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
           # Handle geofilter.polygon
           if (!is.null(geofilter.polygon)) {
             geofilter.polygon <- geofilter.polygon %>%
-              unite(polygon, lat, lon, sep = ",") %>%
-              mutate(polygon = paste0("(", polygon, ")")) %$%
+              tidyr::unite(polygon, lat, lon, sep = ",") %>%
+              dplyr::mutate(polygon = paste0("(", polygon, ")")) %$%
               polygon %>%
               paste(collapse = ",")
             additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)
