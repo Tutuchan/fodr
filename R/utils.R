@@ -96,15 +96,14 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
 
           # Handle geofilter.polygon
           if (!is.null(geofilter.polygon)) {
-            geofilter.polygon <- geofilter.polygon %>%
+            geofilter.polygon <- (geofilter.polygon %>%
               tidyr::unite(polygon, lat, lon, sep = ",") %>%
-              dplyr::mutate(polygon = paste0("(", polygon, ")")) %$%
-              polygon %>%
+              dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
               paste(collapse = ",")
             additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)
           }
-          url <- paste0(url, "?", paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
-          print(url)
+          sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
+          url <- paste0(url, sep, paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
           url
 
 }
@@ -139,9 +138,8 @@ providers <- function(){
 }
 
 get_base_url <- function(provider){
-  providers() %>%
-    dplyr::filter(providers == provider) %$%
-    base_urls
+  (providers() %>%
+    dplyr::filter(providers == provider))$base_urls
 }
 
 datasets_facets <- function(){

@@ -55,17 +55,15 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                self$sortables <- get_sortables(self$fields)
                              },
                              get = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
-                               url <- get_provider_url(provider, "records") %>%
-                                 paste0("search?dataset=", id) %>%
+                               url <- get_provider_url(self$provider, "records") %>%
+                                 paste0("search?dataset=", self$id) %>%
                                  add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
 
-                               res <- jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE) %$%
-                                 records
+                               res <- jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE)$records
 
                                out <- if (length(res) > 0) {
-                                 fields <- res %>%
-                                   purrr::transpose() %$%
-                                   fields %>%
+                                 fields <- (res %>%
+                                   purrr::transpose())$fields %>%
                                    purrr::transpose()
 
                                  if ("geom" %in% names(fields)) fields$geom <- tidy_geom(fields$geom)

@@ -13,7 +13,7 @@
 #'
 #' \code{q} is used to perform a full text-search in all elements of the dataset. To search for all
 #' records containing the word "Paris", use \code{q = "Paris"}. See
-#' \href{https://docs.opendatasoft.com/fr/api/query_language_and_geo_filtering.html#query-language}{here} for more information.
+#' \href{https://docs.opendatasoft.com/en/api/query_language_and_geo_filtering.html#query-language}{here} for more information.
 #'
 #' \code{lang} can be set to use language-specific functions on the elements passed to the \code{q}
 #' parameter but is not implemented yet.
