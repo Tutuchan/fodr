@@ -1,11 +1,11 @@
-# Get content portal url
+# Get base portal API url
 get_portal_url <- function(portal, endpoint){
   stopifnot(portal %in% portals()$portals)
   paste0(get_base_url(portal), "/api/", endpoint, "/1.0/")
 }
 
-# Get datasets data
-get_datasets <- function(portal, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
+# Search for datasets on a portal
+search_datasets <- function(portal, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
   url <- get_portal_url(portal, "datasets") %>%
     paste0("search/") %>%
     add_parameters_to_url(nrows, refine, exclude, sort, q, lang)
@@ -65,10 +65,10 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
           is.null(lang),
           is.null(geofilter.distance),
           is.null(geofilter.polygon))) return(url) else additional_url <- c()
-
+          
           # Handle nrows
           if (!is.null(nrows)) additional_url <- c(additional_url, rows = nrows)
-
+          
           # Handle refine
           if (!is.null(refine)) for (i in 1:length(refine)) {
             facet = names(refine)[i]
@@ -76,7 +76,7 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
             names(val) = paste0("refine.", facet)
             additional_url <- c(additional_url, facet = facet, val)
           }
-
+          
           # Handle exclude
           if (!is.null(exclude)) for (i in 1:length(exclude)) {
             facet = names(exclude)[i]
@@ -84,48 +84,49 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
             names(val) = paste0("exclude.", facet)
             additional_url <- c(additional_url, facet = facet, val)
           }
-
+          
           # Handle sort
           if (!is.null(sort)) additional_url <- c(additional_url, sort = sort)
-
+          
           # Handle q
           if (!is.null(q)) additional_url <- c(additional_url, q = q)
-
+          
           # Handle geofilter.distance
           if (!is.null(geofilter.distance)) additional_url <- c(additional_url, geofilter.distance = paste(geofilter.distance, collapse = ","))
-
+          
           # Handle geofilter.polygon
           if (!is.null(geofilter.polygon)) {
             geofilter.polygon <- (geofilter.polygon %>%
-              tidyr::unite(polygon, lat, lon, sep = ",") %>%
-              dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
+                                    tidyr::unite(polygon, lat, lon, sep = ",") %>%
+                                    dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
               paste(collapse = ",")
             additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)
           }
           sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
           url <- paste0(url, sep, paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
           url
-
+          
 }
 
 clean_list <- function(l) {
-	l[!sapply(l, is.null)]
+  l[!sapply(l, is.null)]
 }
 
 # Constants
 portals <- function(){
   dplyr::data_frame(portals = c("ratp",
-                                  "iledefrance",
-                                  "infogreffe",
-                                  "toulouse",
-                                  "star",
-                                  "issy",
-                                  "stif",
-                                  "paris",
-                                  "04",
-                                  "62",
-                                  "92",
-                                  "enesr"),
+                                "iledefrance",
+                                "infogreffe",
+                                "toulouse",
+                                "star",
+                                "issy",
+                                "stif",
+                                "paris",
+                                "04",
+                                "62",
+                                "92",
+                                "enesr",
+                                "erdf"),
                     base_urls = c("http://data.ratp.fr",
                                   "http://data.iledefrance.fr",
                                   "http://datainfogreffe.fr",
@@ -137,12 +138,13 @@ portals <- function(){
                                   "http://tourisme04.opendatasoft.com",
                                   "http://tourisme62.opendatasoft.com",
                                   "https://opendata.hauts-de-seine.fr",
-                                  "http://data.enseignementsup-recherche.gouv.fr"))
+                                  "http://data.enseignementsup-recherche.gouv.fr",
+                                  "https://data.erdf.fr"))
 }
 
 get_base_url <- function(portal){
   (portals() %>%
-    dplyr::filter(portals == portal))$base_urls
+     dplyr::filter(portals == portal))$base_urls
 }
 
 datasets_facets <- function(){

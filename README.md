@@ -32,6 +32,7 @@ The following portals are currently available with `fodr`:
 | Tourisme Alpes-Maritimes                                                           | http://tourisme04.opendatasoft.com            |      04     |
 | Tourisme Pas-de-Calais                                                             | http://tourisme62.opendatasoft.com            |      62     |
 | Département des Hauts-de-Seine                                                     | https://opendata.hauts-de-seine.fr            |      92     |
+| ERDF                                                                               | https://data.erdf.fr                          |     erdf    |
 
 The portals have been identified from the [Open Data Inception](http://opendatainception.io) website. Many of these portals do not actually contain data
 and a large number of them are available on the ArcGIS Open platform. This API will be supported in a future release.
@@ -64,9 +65,9 @@ Themes:
 --------------------------------------------------------------------
 ```
 
-The `search` method allows you to find datasets on this portal (see the function documentation for more information). 
+The `search` method allows you to find datasets on this portal (see the function documentation for more information). By default, and contrary to the Open Data Soft API, all elements satisfying the search are returned. 
 
-By default, and contrary to the Open Data Soft API, all elements satisfying the search are returned. Let's look at the datasets that contain the word *vote*:
+Let's look at the datasets that contain the word *vote*:
 
 ```r
 list_datasets <-  portal$search(q = "vote")
@@ -79,7 +80,7 @@ FODRDataset object
 Dataset id: budgets-votes-annexes 
 Theme: Finances 
 Keywords: budget 
-Portal: Mairie de Paris  
+Publisher: Mairie de Paris  
 --------------------------------------------------------------------
 Number of records: 4868 
 Number of files: 0 
@@ -93,9 +94,7 @@ Sortables: exercice_comptable
 
 ```r
 list_culture_datasets <-  portal$search(theme = "Culture")
-lapply(list_culture_datasets, function(dataset) {
-  dataset$info$metas$theme
-}) %>% 
+lapply(list_culture_datasets, function(dataset) dataset$info$metas$theme) %>% 
   unlist() %>% 
   unique()%>% 
   sort()
@@ -107,7 +106,7 @@ lapply(list_culture_datasets, function(dataset) {
 
 ```r
 dts <- list_datasets[[1]]
-dts$get(nrows = dts$info$metas$records_count)
+dts$get_records()
 ```
 
 ```
@@ -133,7 +132,7 @@ Variables not shown: nature_budgetaire_texte <chr>, type_du_vote <chr>, type_d_o
 
 ```r
 dts <- list_datasets[[1]]
-records <- dts$get(nrows = dts$info$metas$records_count, refine = list(type_du_vote = "Décision modif. 2"))
+records <- dts$get_records(nrows = dts$info$metas$records_count, refine = list(type_du_vote = "Décision modif. 2"))
 records$type_du_vote
 ```
 
@@ -154,11 +153,19 @@ records$type_du_vote
 [92] "Décision modif. 2"
 ```
 
+### Download attachments
+
+Some datasets have attached files in a pdf, docx, xlsx, ... format. These can be retrieved using the `get_attachments` method:
+
+```r
+dts <- fodr_dataset("erdf", "coefficients-des-profils")
+dts$get_attachments("DictionnaireProfils.xlsx")
+```
+
 ## License of the data 
 
 Most of the data is available under the [Open Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence) ([english PDF version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf)) but double check if you are unsure.
 
 ## Roadmap
 
-+ download attachments,
 + handle ArcGIS-powered portals
