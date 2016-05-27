@@ -12,5 +12,6 @@ Imports:
     dplyr,
     jsonlite,
     purrr,
+    R6,
     tidyr
 RoxygenNote: 5.0.1
