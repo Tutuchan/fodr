@@ -5,16 +5,16 @@
 #' @name wrappers
 NULL
 
-#' @param provider a character
+#' @param portal a character
 #' @rdname wrappers
 #' @export
-fodr_provider <- function(provider){
-  FODRProvider$new(provider)
+fodr_portal <- function(portal){
+  FODRPortal$new(portal)
 }
 
 #' @param id a character
 #' @rdname wrappers
 #' @export
-fodr_dataset <- function(provider, id){
-  FODRDataset$new(provider, id)
+fodr_dataset <- function(portal, id){
+  FODRDataset$new(portal, id)
 }

@@ -1,20 +1,20 @@
-# Get content provider url
-get_provider_url <- function(provider, endpoint){
-  stopifnot(provider %in% providers()$providers)
-  paste0(get_base_url(provider), "/api/", endpoint, "/1.0/")
+# Get content portal url
+get_portal_url <- function(portal, endpoint){
+  stopifnot(portal %in% portals()$portals)
+  paste0(get_base_url(portal), "/api/", endpoint, "/1.0/")
 }
 
 # Get datasets data
-get_datasets <- function(provider, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
-  url <- get_provider_url(provider, "datasets") %>%
+get_datasets <- function(portal, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
+  url <- get_portal_url(portal, "datasets") %>%
     paste0("search/") %>%
     add_parameters_to_url(nrows, refine, exclude, sort, q, lang)
   list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
 }
 
 # Get dataset meta data
-get_dataset <- function(provider, id) {
-  url <- get_provider_url(provider, "datasets") %>%
+get_dataset <- function(portal, id) {
+  url <- get_portal_url(portal, "datasets") %>%
     paste0(id, "/")
   list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
 }
@@ -108,10 +108,13 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
 
 }
 
+clean_list <- function(l) {
+	l[!sapply(l, is.null)]
+}
 
 # Constants
-providers <- function(){
-  dplyr::data_frame(providers = c("ratp",
+portals <- function(){
+  dplyr::data_frame(portals = c("ratp",
                                   "iledefrance",
                                   "infogreffe",
                                   "toulouse",
@@ -137,9 +140,9 @@ providers <- function(){
                                   "http://data.enseignementsup-recherche.gouv.fr"))
 }
 
-get_base_url <- function(provider){
-  (providers() %>%
-    dplyr::filter(providers == provider))$base_urls
+get_base_url <- function(portal){
+  (portals() %>%
+    dplyr::filter(portals == portal))$base_urls
 }
 
 datasets_facets <- function(){

@@ -2,11 +2,13 @@
 
 `fodr` is an R package to access various French Open Data portals.
 
-Many of those portals use the OpenDataSoft platform to make their data available and this platform can be accessed with the [OpenDataSoft APIs](https://docs.opendatasoft.com/en/api/catalog_api.html). `fodr` makes it easier to retrieve data directly in R.
+Many of those portals use the OpenDataSoft platform to make their data available and this platform can be accessed with the [OpenDataSoft APIs](https://docs.opendatasoft.com/en/api/catalog_api.html). 
+
+`fodr` wraps this API to make it easier to retrieve data directly in R.
 
 ## Installation
 
-You are going to need the `devtools` package to install `fodr`:
+The `devtools` package is needed to install `fodr`:
 
 ```r
 devtools::install_github("tutuchan/fodr")
@@ -31,20 +33,23 @@ The following portals are currently available with `fodr`:
 | Tourisme Pas-de-Calais                                                             | http://tourisme62.opendatasoft.com            |      62     |
 | Département des Hauts-de-Seine                                                     | https://opendata.hauts-de-seine.fr            |      92     |
 
+The portals have been identified from the [Open Data Inception](http://opendatainception.io) website. Many of these portals do not actually contain data
+and a large number of them are available on the ArcGIS Open platform. This API will be supported in a future release.
+
 ## Retrieve datasets on a portal
 
-Use the `fodr_provider` function with the corresponding **fodr slug** to create a `FODRProvider` object:
+Use the `fodr_portal` function with the corresponding **fodr slug** to create a `FODRPortal` object:
 
 ```r
 library(fodr)
-portal <- fodr_provider("paris")
+portal <- fodr_portal("paris")
 portal
 ```
 
 ```
-FODRProvider object
+FODRPortal object
 --------------------------------------------------------------------
-Provider: paris 
+Portal: paris 
 Number of datasets: 175 
 Themes:
   - Administration
@@ -59,7 +64,9 @@ Themes:
 --------------------------------------------------------------------
 ```
 
-The `search` method allows you to find datasets on this portal (see the function documentation for more information). By default, 10 elements are returned. Let's look at the datasets that contain the word *vote*:
+The `search` method allows you to find datasets on this portal (see the function documentation for more information). 
+
+By default, and contrary to the Open Data Soft API, all elements satisfying the search are returned. Let's look at the datasets that contain the word *vote*:
 
 ```r
 list_datasets <-  portal$search(q = "vote")
@@ -72,7 +79,7 @@ FODRDataset object
 Dataset id: budgets-votes-annexes 
 Theme: Finances 
 Keywords: budget 
-Provider: Mairie de Paris  
+Portal: Mairie de Paris  
 --------------------------------------------------------------------
 Number of records: 4868 
 Number of files: 0 
@@ -81,6 +88,20 @@ Facets: exercice_comptable, budget, section_budgetaire_i_f, sens_depense_recette
 Sortables: exercice_comptable 
 --------------------------------------------------------------------
 ```
+
+## Retrieve datasets by theme
+
+```r
+list_culture_datasets <-  portal$search(theme = "Culture")
+lapply(list_culture_datasets, function(dataset) {
+  dataset$info$metas$theme
+}) %>% 
+  unlist() %>% 
+  unique()%>% 
+  sort()
+```
+
+
 
 ## Retrieve records on a dataset
 
@@ -136,3 +157,8 @@ records$type_du_vote
 ## License of the data 
 
 Most of the data is available under the [Open Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence) ([english PDF version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf)) but double check if you are unsure.
+
+## Roadmap
+
++ download attachments,
++ handle ArcGIS-powered portals

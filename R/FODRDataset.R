@@ -1,12 +1,12 @@
 #' Main dataset class
 #'
 #' This is the entry point to retrieve records from a dataset. Initialize a \code{FODRDataset}
-#' with a \code{provider} and an \code{id}.
+#' with a \code{portal} and an \code{id}.
 #'
 #' @docType class
-#' @param provider a character, must be one of the available providers
+#' @param portal a character, must be one of the available portals
 #' @param id a character, the dataset identifier
-#' @field provider a character, must be one of the available providers
+#' @field portal a character, must be one of the available portals
 #' @field data a data.frame returned by the \code{\link[=dataset_get]{get}} method
 #' @field fields a character vector
 #' @field facets a character vector or variables that can be used to filter results
@@ -28,7 +28,7 @@
 #' @export
 FODRDataset <- R6::R6Class("FODRDataset",
                            public = list(
-                             provider = NULL,
+                             portal = NULL,
                              data = NULL,
                              facets = NULL,
                              fields = NULL,
@@ -36,10 +36,10 @@ FODRDataset <- R6::R6Class("FODRDataset",
                              info = NULL,
                              sortables = NULL,
                              url = NULL,
-                             initialize = function(provider, id){
-                               raw_data <- get_dataset(provider, id)
+                             initialize = function(portal, id){
+                               raw_data <- get_dataset(portal, id)
 
-                               self$provider <- provider
+                               self$portal <- portal
                                self$id <- id
 
                                self$url <- raw_data$url
@@ -55,7 +55,8 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                self$sortables <- get_sortables(self$fields)
                              },
                              get = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
-                               url <- get_provider_url(self$provider, "records") %>%
+                               if (is.null(nrows)) nrows <- self$info$metas$records_count
+							   url <- get_portal_url(self$portal, "records") %>%
                                  paste0("search?dataset=", self$id) %>%
                                  add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
 
@@ -83,7 +84,7 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                cat(paste("Dataset id:", self$id, "\n"))
                                cat(paste("Theme:", self$info$meta$theme, "\n"))
                                cat(paste("Keywords:", paste(self$info$meta$keywords, collapse = ", "), "\n"))
-                               cat(paste("Provider:", self$info$meta$publisher, "\n"))
+                               cat(paste("Portal:", self$info$meta$publisher, "\n"))
                                cat("--------------------------------------------------------------------\n")
                                cat(paste("Number of records:", self$info$meta$records_count, "\n"))
                                cat(paste("Number of files:", length(self$info$attachments), "\n"))

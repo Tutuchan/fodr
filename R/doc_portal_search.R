@@ -16,12 +16,14 @@
 #' \code{lang} can be set to use language-specific functions on the elements passed to the \code{q}
 #' parameter but is not implemented yet.
 #'
-#' @param nrows an integer, indicates the number of records to fetch (defaults to 10)
+#' \code{theme} can be set to filter only datasets with a specific theme.
+#'
+#' @param nrows an integer, indicates the number of records to fetch (defaults to NULL, i.e. all matching records are fetched)
 #' @param refine a named list
 #' @param exclude a named list
 #' @param sort a character
 #' @param q a character, used to do full-text search
 #' @param lang a character, the language used in the \code{q} parameter
 #' @name provider_search
-#' @usage <FODRProvider>$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL)
+#' @usage <FODRProvider>$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, theme = NULL)
 NULL
