@@ -8,9 +8,9 @@
 #' @field portal a character, the portal name
 #' @field data a list of \code{\link{FODRDataset}} objects
 #' @field facets a character vector of variables that can be used to filter results. For a 
-#' \code{\link{FODRPortal}, these are constant.
+#' \code{\link{FODRPortal}}, these are constant.
 #' @field sortables a character vector, indicates on which fields sorting is allowed. For a 
-#' \code{\link{FODRPortal}, these are constant.
+#' \code{\link{FODRPortal}}, these are constant.
 #' @field themes a character vector, the unique themes datasets on the portals can be associated with
 #' @return An object of class \code{\link{FODRPortal}} with methods designed to retrieve datasets from an open data portal.
 #' #' @section Methods:

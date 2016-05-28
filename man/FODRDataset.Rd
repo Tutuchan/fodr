@@ -9,24 +9,21 @@
 FODRDataset
 }
 \arguments{
-\item{provider}{a character, must be one of the available providers}
+\item{portal}{a character, must be one of the available portals}
 
 \item{id}{a character, the dataset identifier}
 }
 \value{
 An object of class \code{\link{FODRDataset}} with methods designed to retrieve data from an open dataset.
-#' @section Methods:
-\describe{
-  \item{\code{\link[=dataset_get]{get}}}{This method retrieves records from the dataset.}}
 }
 \description{
 This is the entry point to retrieve records from a dataset. Initialize a \code{FODRDataset}
-with a \code{provider} and an \code{id}.
+with a \code{portal} and an \code{id}.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{provider}}{a character, must be one of the available providers}
+\item{\code{portal}}{a character, must be one of the available portals}
 
 \item{\code{data}}{a data.frame returned by the \code{\link[=dataset_get]{get}} method}
 
@@ -49,5 +46,11 @@ with a \code{provider} and an \code{id}.
 
 \item{\code{url}}{a character, the actual url sent to the API}
 }}
+\section{Methods}{
+
+\describe{
+  \item{\code{\link{get_attachments}}}{This method retrieves attachments from the dataset.}
+  \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}}
+}
 \keyword{datasets}
 

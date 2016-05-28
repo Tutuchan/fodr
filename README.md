@@ -34,8 +34,9 @@ The following portals are currently available with `fodr`:
 | Département des Hauts-de-Seine                                                     | https://opendata.hauts-de-seine.fr            |      92     |
 | ERDF                                                                               | https://data.erdf.fr                          |     erdf    |
 
-The portals have been identified from the [Open Data Inception](http://opendatainception.io) website. Many of these portals do not actually contain data
-and a large number of them are available on the ArcGIS Open platform. This API will be supported in a future release.
+The portals have been identified from the [Open Data Inception](http://opendatainception.io) website. Many of these portals do not actually contain data and a large number of them are available *via* the ArcGIS Open platform. This API will be supported in a future release.
+
+You can find this list in the package with the `list_portals` function.
 
 ## Retrieve datasets on a portal
 

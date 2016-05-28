@@ -2,16 +2,16 @@
 % Please edit documentation in R/wrappers.R
 \name{wrappers}
 \alias{fodr_dataset}
-\alias{fodr_provider}
+\alias{fodr_portal}
 \alias{wrappers}
 \title{Wrappers}
 \usage{
-fodr_provider(provider)
+fodr_portal(portal)
 
-fodr_dataset(provider, id)
+fodr_dataset(portal, id)
 }
 \arguments{
-\item{provider}{a character}
+\item{portal}{a character}
 
 \item{id}{a character}
 }

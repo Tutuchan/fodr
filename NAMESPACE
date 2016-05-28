@@ -2,7 +2,8 @@
 
 export("%>%")
 export(FODRDataset)
-export(FODRProvider)
+export(FODRPortal)
 export(fodr_dataset)
-export(fodr_provider)
+export(fodr_portal)
+export(list_portals)
 importFrom(magrittr,"%>%")

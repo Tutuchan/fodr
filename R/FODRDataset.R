@@ -22,9 +22,9 @@
 #' @field sortables a character vector containing a subset of \strong{fields}, indicates on which fields sorting is allowed
 #' @field url a character, the actual url sent to the API
 #' @return An object of class \code{\link{FODRDataset}} with methods designed to retrieve data from an open dataset.
-#' #' @section Methods:
+#' @section Methods:
 #' \describe{
-#'   \item{\code{\link{get_attachments}}}{This method retrieves attachments from the dataset.}}
+#'   \item{\code{\link{get_attachments}}}{This method retrieves attachments from the dataset.}
 #'   \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}}
 #' @export
 FODRDataset <- R6::R6Class("FODRDataset",

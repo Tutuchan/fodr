@@ -114,7 +114,20 @@ clean_list <- function(l) {
 
 # Constants
 portals <- function(){
-  dplyr::data_frame(portals = c("ratp",
+  dplyr::data_frame(name = c("RATP",
+                             "Région Ile-de-France",
+                             "Infogreffe",
+                             "Toulouse Métropole",
+                             "STAR",
+                             "Issy-les-Moulineaux",
+                             "STIF",
+                             "Paris",
+                             "Tourisme Alpes-Maritimes",
+                             "Tourisme Pas-de-Calais",
+                             "Département des Hauts-de-Seine",
+                             "Ministère de l'Education Nationale, de l'Enseignement supérieur et de la Recherche",
+                             "ERDF"),
+                    portals = c("ratp",
                                 "iledefrance",
                                 "infogreffe",
                                 "toulouse",
