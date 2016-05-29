@@ -34,6 +34,6 @@
 #' format (e.g. \code{c(48.57, 2.24, 500)})
 #' @param geofilter.polygon a data.frame with two columns named \code{lat} and \code{lon}
 #' @name get_records
-#' @usage <FODRDataset>$get(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
-#' lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)
+#' @examples \donttest{dts$get_records(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
+#' lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)}
 NULL

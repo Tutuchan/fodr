@@ -4,7 +4,6 @@
 #' with a \code{portal}.
 #'
 #' @docType class
-#' @param portal a character, must be one of the available portals
 #' @field portal a character, the portal name
 #' @field data a list of \code{\link{FODRDataset}} objects
 #' @field facets a character vector of variables that can be used to filter results. For a 

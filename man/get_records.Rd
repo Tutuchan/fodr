@@ -3,10 +3,6 @@
 \name{get_records}
 \alias{get_records}
 \title{Fetch dataset records}
-\usage{
-<FODRDataset>$get(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
-lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)
-}
 \arguments{
 \item{nrows}{an integer, indicates the number of records to fetch (defaults to 10)}
 
@@ -50,5 +46,9 @@ specified distance from the specified point, if applicable.
 
 \code{geofilter.polygon} can be used to retrieve only the records that are within the
 specified polygon, if applicable.
+}
+\examples{
+\donttest{dts$get_records(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
+lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)}
 }
 

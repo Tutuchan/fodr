@@ -1,11 +1,11 @@
 #' Fetch datasets
 #'
-#' This method is used to retrieve datasets from a provider.
+#' This method is used to retrieve datasets from a portal.
 #'
 #' \code{refine} and \code{exclude}, if set, must be named lists where the names are the
 #' facets to use and the values of the list, the values to pick or exclude.
 #'
-#' \code{sort} takes a character in the \code{sortables} element of the provider object and sorts
+#' \code{sort} takes a character in the \code{sortables} element of the portal object and sorts
 #' the results according to its value. Add a \code{-} in front in order to sort in descending
 #' order (e.g. \code{sort = "-commune"}).
 #'
@@ -24,6 +24,8 @@
 #' @param sort a character
 #' @param q a character, used to do full-text search
 #' @param lang a character, the language used in the \code{q} parameter
-#' @name provider_search
-#' @usage <FODRProvider>$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, theme = NULL)
+#' @param theme a character, one of the themes of the portal
+#' @name portal_search
+#' @examples \donttest{portal$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL,
+#' q = NULL, lang = NULL, theme = NULL)}
 NULL

@@ -47,7 +47,7 @@ tidy_geom_xy <- function(x) {
 # Transform the geom column
 tidy_geom <- function(x) {
   lapply(x, function(xx) {
-    setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
+    stats::setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
       purrr::transpose() %>%
       dplyr::bind_rows()
   })
@@ -96,8 +96,7 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
           
           # Handle geofilter.polygon
           if (!is.null(geofilter.polygon)) {
-            geofilter.polygon <- (geofilter.polygon %>%
-                                    tidyr::unite(polygon, lat, lon, sep = ",") %>%
+            geofilter.polygon <- (tidyr::unite(geofilter.polygon, polygon, lat, lon, sep = ",") %>%
                                     dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
               paste(collapse = ",")
             additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)

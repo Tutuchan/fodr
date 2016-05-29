@@ -8,9 +8,6 @@
 \usage{
 FODRPortal
 }
-\arguments{
-\item{portal}{a character, must be one of the available portals}
-}
 \value{
 An object of class \code{\link{FODRPortal}} with methods designed to retrieve datasets from an open data portal.
 #' @section Methods:

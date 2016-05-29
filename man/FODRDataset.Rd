@@ -8,11 +8,6 @@
 \usage{
 FODRDataset
 }
-\arguments{
-\item{portal}{a character, must be one of the available portals}
-
-\item{id}{a character, the dataset identifier}
-}
 \value{
 An object of class \code{\link{FODRDataset}} with methods designed to retrieve data from an open dataset.
 }
@@ -25,7 +20,7 @@ with a \code{portal} and an \code{id}.
 \describe{
 \item{\code{portal}}{a character, must be one of the available portals}
 
-\item{\code{data}}{a data.frame returned by the \code{\link[=dataset_get]{get}} method}
+\item{\code{data}}{a data.frame returned by the \code{\link[=get_records]{get_records}} method}
 
 \item{\code{fields}}{a character vector}
 

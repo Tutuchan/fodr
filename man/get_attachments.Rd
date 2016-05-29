@@ -3,9 +3,6 @@
 \name{get_attachments}
 \alias{get_attachments}
 \title{Fetch dataset attachments}
-\usage{
-<FODRDataset>$get_attachments(fname, output = NULL)
-}
 \arguments{
 \item{fname}{a character, the title of the file in the \code{attachments} element of the \code{info} field}
 
@@ -13,5 +10,8 @@
 }
 \description{
 This method is used to retrieve attachments from a  dataset.
+}
+\examples{
+\donttest{dts$get_attachments(fname, output = NULL)}
 }
 

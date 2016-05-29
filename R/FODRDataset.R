@@ -4,10 +4,8 @@
 #' with a \code{portal} and an \code{id}.
 #'
 #' @docType class
-#' @param portal a character, must be one of the available portals
-#' @param id a character, the dataset identifier
 #' @field portal a character, must be one of the available portals
-#' @field data a data.frame returned by the \code{\link[=dataset_get]{get}} method
+#' @field data a data.frame returned by the \code{\link[=get_records]{get_records}} method
 #' @field fields a character vector
 #' @field facets a character vector or variables that can be used to filter results
 #' @field id a character, the dataset id
