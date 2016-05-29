@@ -95,7 +95,8 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                cat(paste("Publisher:", self$info$meta$publisher, "\n"))
                                cat("--------------------------------------------------------------------\n")
                                cat(paste("Number of records:", self$info$meta$records_count, "\n"))
-                               cat(paste("Number of files:", nrow(self$info$attachments), "\n"))
+                               if (is.null(nfiles <- nrow(self$info$attachments))) nfiles <- 0
+                               cat(paste("Number of files:", nfiles, "\n"))
                                cat(paste("Modified:", as.Date(self$info$meta$modified), "\n"))
                                if (!is.null(self$facets)) cat(paste("Facets:", paste(self$facets, collapse = ", "), "\n"))
                                if (!is.null(self$sortables)) cat(paste("Sortables:", paste(self$sortables, collapse = ", "), "\n"))
