@@ -51,16 +51,16 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                dataset$metas$keywords <- unlist(dataset$metas$keyword)
                                dataset$metas$keyword <- NULL
                                self$info <- c(self$info, dataset[c("metas", "attachments", "alternative_exports", "billing_plans")])
-                               self$info$attachments <- self$info$attachments %>% purrr::transpose
+                               self$info$attachments <- self$info$attachments %>% purrr::transpose() %>% lapply(unlist)
                                self$fields <- dataset$fields
                                self$facets <- get_facets(self$fields)
                                self$sortables <- get_sortables(self$fields)
                              },
                              get_attachments = function(fname, output = NULL){
-                               id <- self$info$attachments$ids[self$info$attachments$title == fname]
+                               id <- self$info$attachments$id[which(self$info$attachments$title == fname)]
                                url <- paste0(self$url, "attachments/", id)
                                if (is.null(output)) output <- fname
-                               download.file(url = url, destfile = output)
+                               curl::curl_download(url = url, destfile = output)
                              },
                              get_records = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
                                if (is.null(nrows)) nrows <- self$info$metas$records_count

@@ -46,11 +46,11 @@ tidy_geom_xy <- function(x) {
 
 # Transform the geom column
 tidy_geom <- function(x) {
-  lapply(x, function(xx) {
-    setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
-      purrr::transpose() %>%
-      dplyr::bind_rows()
-  })
+  # lapply(x, function(xx) {
+  #   setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
+  #     purrr::transpose() %>%
+  #     dplyr::bind_rows()
+  # })
 }
 
 

@@ -34,15 +34,15 @@ FODRPortal <- R6::R6Class("FODRPortal",
                             },
                             search = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, theme = NULL) {
                               if (is.null(nrows)) nrows <- self$n_datasets
+                              n_datasets <- if (is.null(theme)) nrows else private$themes_freq$Freq[private$themes_freq$themes == theme]
                               listDatasets <- search_datasets(portal = self$portal, nrows, refine, exclude, sort, q, lang)$data$datasets
-                              cat(paste(length(listDatasets), "datasets found ..."), "\n")
+                              cat(paste(n_datasets, "datasets found ..."), "\n")
                               self$data <- lapply(listDatasets, function(dataset){
                                 if (!is.null(theme)) if (dataset$metas$theme != theme) return(NULL)
                                 FODRDataset$new(self$portal, dataset$datasetid)
                               }) %>% clean_list()
                               self$data
                             },
-                            
                             print = function() {
                               cat("FODRPortal object\n")
                               cat("--------------------------------------------------------------------\n")
@@ -54,10 +54,14 @@ FODRPortal <- R6::R6Class("FODRPortal",
                           ),
                           private = list(
                             get_themes = function(){
-                              lapply(search_datasets(portal = self$portal, nrows = self$n_datasets)$data$datasets, function(dataset) {
+                              themes <- lapply(search_datasets(portal = self$portal, nrows = self$n_datasets)$data$datasets, function(dataset) {
                                 dataset$metas$theme
                               }) %>%
-                                unlist %>%
+                                unlist 
+                              private$themes_freq <- as.data.frame(table(themes))
+                              print(private$themes_freq)
+                              themes %>%
                                 unique %>%
                                 sort
-                            }))
+                            },
+                            themes_freq = NULL))

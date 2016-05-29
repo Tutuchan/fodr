@@ -9,6 +9,7 @@ Description: Connect to various French open data providers and fetch the availab
 License: MIT
 LazyData: TRUE
 Imports:
+    curl,
     dplyr,
     jsonlite,
     purrr,
