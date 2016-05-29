@@ -14,7 +14,9 @@ The `devtools` package is needed to install `fodr`:
 devtools::install_github("tutuchan/fodr")
 ```
 
-## Available portals
+## Portals
+
+#### Available portals
 
 The following portals are currently available with `fodr`:
 
@@ -38,7 +40,7 @@ The portals have been identified from the [Open Data Inception](http://opendatai
 
 You can find this list in the package with the `list_portals` function.
 
-## Retrieve datasets on a portal
+#### Retrieve datasets on a portal
 
 Use the `fodr_portal` function with the corresponding **fodr slug** to create a `FODRPortal` object:
 
@@ -91,7 +93,7 @@ Sortables: exercice_comptable
 --------------------------------------------------------------------
 ```
 
-## Retrieve datasets by theme
+#### Retrieve datasets by theme
 
 ```r
 list_culture_datasets <-  portal$search(theme = "Culture")
@@ -101,9 +103,9 @@ lapply(list_culture_datasets, function(dataset) dataset$info$metas$theme) %>%
   sort()
 ```
 
+## Datasets
 
-
-## Retrieve records on a dataset
+#### Retrieve records on a dataset
 
 ```r
 dts <- list_datasets[[1]]
@@ -129,7 +131,7 @@ Source: local data frame [4,868 x 11]
 Variables not shown: nature_budgetaire_texte <chr>, type_du_vote <chr>, type_d_operation_r_o_i_m <chr>, section_budgetaire_i_f <chr>, exercice_comptable
 ```
 
-## Filter records
+#### Filter records
 
 ```r
 dts <- list_datasets[[1]]
@@ -154,7 +156,7 @@ records$type_du_vote
 [92] "Décision modif. 2"
 ```
 
-### Download attachments
+#### Download attachments
 
 Some datasets have attached files in a pdf, docx, xlsx, ... format. These can be retrieved using the `get_attachments` method:
 
@@ -167,6 +169,9 @@ dts$get_attachments("DictionnaireProfils.xlsx")
 
 Most of the data is available under the [Open Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence) ([english PDF version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf)) but double check if you are unsure.
 
-## Roadmap
+## TODO
 
-+ handle ArcGIS-powered portals
++ handle portals that require authentification,
++ handle ArcGIS-powered portals,
++ possibly handle navitia.io portals,
++ ?
