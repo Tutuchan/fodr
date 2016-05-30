@@ -44,6 +44,11 @@ tidy_geom_xy <- function(x) {
   lapply(x, function(xx) list(x = xx[[1]], y = xx[[2]]))
 }
 
+# Transform the position column
+tidy_position <- function(x) {
+  lapply(x, function(xx) list(x = xx[[2]], y = xx[[1]]))
+}
+
 # Transform the geom column
 tidy_geom <- function(x) {
   lapply(x, function(xx) {

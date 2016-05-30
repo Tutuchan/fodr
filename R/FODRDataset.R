@@ -76,7 +76,7 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                  if ("geom" %in% names(fields)) fields$geom <- tidy_geom(fields$geom)
                                  if ("geom_x_y" %in% names(fields)) fields$geom_x_y <- tidy_geom_xy(fields$geom_x_y)
                                  if ("position" %in% names(fields)) {
-                                   fields$geom_x_y <- tidy_geom_xy(fields$position)
+                                   fields$geom_x_y <- tidy_position(fields$position)
                                    fields$position <- NULL
                                  }
                                  
