@@ -4,5 +4,5 @@
 #' 
 #' @export
 list_portals <- function(){
-  print(portals())
+  portals()
 }
