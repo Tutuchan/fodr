@@ -33,6 +33,7 @@
 #' @param geofilter.distance a numeric vector of three elements in the \code{(latitude, longitude, distance (in meters))}
 #' format (e.g. \code{c(48.57, 2.24, 500)})
 #' @param geofilter.polygon a data.frame with two columns named \code{lat} and \code{lon}
+#' @param debug a logical, if TRUE, prints the url sent to the portal
 #' @name get_records
 #' @examples \donttest{dts$get_records(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
 #' lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)}

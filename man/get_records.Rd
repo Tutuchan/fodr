@@ -20,6 +20,8 @@
 format (e.g. \code{c(48.57, 2.24, 500)})}
 
 \item{geofilter.polygon}{a data.frame with two columns named \code{lat} and \code{lon}}
+
+\item{debug}{a logical, if TRUE, prints the url sent to the portal}
 }
 \description{
 This method is used to retrieve records for a specific dataset.

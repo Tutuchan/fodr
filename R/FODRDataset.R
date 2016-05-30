@@ -60,11 +60,11 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                if (is.null(output)) output <- fname
                                curl::curl_download(url = url, destfile = output)
                              },
-                             get_records = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
+                             get_records = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL, debug = FALSE) {
                                if (is.null(nrows)) nrows <- self$info$metas$records_count
                                url <- get_portal_url(self$portal, "records") %>%
                                  paste0("search?dataset=", self$id) %>%
-                                 add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon)
+                                 add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon, debug)
                                
                                res <- jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE)$records
                                

@@ -56,7 +56,7 @@ tidy_geom <- function(x) {
 
 # Add additional parameters to the url
 add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
-                                  lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL) {
+                                  lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL, debug = FALSE) {
   if (all(is.null(nrows),
           is.null(refine),
           is.null(exclude),
@@ -103,6 +103,7 @@ add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NU
           }
           sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
           url <- paste0(url, sep, paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
+          if (debug) print(url)
           url
           
 }
