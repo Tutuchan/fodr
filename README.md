@@ -175,7 +175,8 @@ See for example the following dataset:
 
 ```r
 dts <- fodr_dataset("stif", "gares-routieres-idf")
-dts$get_records(nrows = 10)
+dfRecords <- dts$get_records(nrows = 10)
+dfRecords
 ```
 ```
 Source: local data frame [10 x 6]
@@ -193,6 +194,15 @@ Source: local data frame [10 x 6]
 9        Gare RER Nogent sur Marne      GR     202 2.472381 48.83457 <tbl_df [18,2]>
 10     Gare RER Boissy Saint Léger      GR     210 2.505877 48.75369 <tbl_df [12,2]>
 ```
+
+You can then use [leaflet](http://rstudio.github.io/leaflet/) to easily plot this data on a map:
+```r
+library(leaflet)
+leaflet(dfRecords) %>% 
+  addProviderTiles("CartoDB.Positron") %>% 
+  addMarkers(popup = ~gro_nom)
+```
+
 
 ## License of the data 
 
