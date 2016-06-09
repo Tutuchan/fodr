@@ -39,25 +39,21 @@ get_sortables <- function(fields){
   }) %>% unlist()
 }
 
-# Transform the geom_x_y column
-tidy_geom_xy <- function(x) {
-  lapply(x, function(xx) list(x = xx[[1]], y = xx[[2]]))
+# Transform Polygon elements in the geo_shape column
+tidy_polygon <- function(x) {
+  y <- x[[1]] %>% 
+    purrr::transpose()
+  dplyr::data_frame(lng = unlist(y[[1]]),
+                    lat = unlist(y[[2]]))
 }
 
-# Transform the position column
-tidy_position <- function(x) {
-  lapply(x, function(xx) list(x = xx[[2]], y = xx[[1]]))
+# Transform LineString elements in the geo_shape column
+tidy_line_string <- function(x) {
+  y <- x %>% 
+    purrr::transpose()
+  dplyr::data_frame(lng = unlist(y[[1]]),
+                    lat = unlist(y[[2]]))
 }
-
-# Transform the geom column
-tidy_geom <- function(x) {
-  lapply(x, function(xx) {
-    stats::setNames(purrr::transpose(xx$coordinates[[1]]), c("x", "y")) %>%
-      purrr::transpose() %>%
-      dplyr::bind_rows()
-  })
-}
-
 
 # Add additional parameters to the url
 add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,

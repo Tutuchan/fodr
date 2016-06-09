@@ -165,6 +165,35 @@ dts <- fodr_dataset("erdf", "coefficients-des-profils")
 dts$get_attachments("DictionnaireProfils.xlsx")
 ```
 
+## GIS data
+
+Some datasets have geographical information on each data point.
+
+For these datasets, two additional columns will be present when fetching records: `lng` and `lat` that correspond to the longitude and latitude of the coordinates of the data point. Additionally, if there are shapes associated to data points (polygons or linestrings for example), they will be stored in the `geo_shape` column as a list of `data.frame`s with the same two columns `lng` and `lat`.
+
+See for example the following dataset:
+
+```r
+dts <- fodr_dataset("stif", "gares-routieres-idf")
+dts$get_records(nrows = 10)
+```
+```
+Source: local data frame [10 x 6]
+
+                           gro_nom type_gr gro_ide      lng      lat       geo_shape
+                             <chr>   <chr>   <int>    <dbl>    <dbl>          <list>
+1             Gare SNCF Argenteuil      GR      80 2.257681 48.94618  <tbl_df [9,2]>
+2  Gare SNCF la Ferté sous Jouarre      GR      28 3.124543 48.95055 <tbl_df [12,2]>
+3      Gare SNCF Enghien les Bains      GR      47 2.305979 48.97374  <tbl_df [8,2]>
+4      Gare RER Survilliers Fosses      GR      57 2.525156 49.09942  <tbl_df [7,2]>
+5     Gare RER Neuville Université      GR      61 2.079814 49.01484 <tbl_df [17,2]>
+6            Gare RER Sartrouville      GR      98 2.158423 48.93758  <tbl_df [6,2]>
+7                  Gare RER Yerres      GR     174 2.483177 48.70694  <tbl_df [9,2]>
+8                  Gare RER Brunoy      GR     175 2.505788 48.69948  <tbl_df [5,2]>
+9        Gare RER Nogent sur Marne      GR     202 2.472381 48.83457 <tbl_df [18,2]>
+10     Gare RER Boissy Saint Léger      GR     210 2.505877 48.75369 <tbl_df [12,2]>
+```
+
 ## License of the data 
 
 Most of the data is available under the [Open Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence) ([english PDF version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf)) but double check if you are unsure.

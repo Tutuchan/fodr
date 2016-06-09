@@ -69,19 +69,51 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                res <- jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE)$records
                                
                                out <- if (length(res) > 0) {
-                                 fields <- (res %>%
-                                              purrr::transpose())$fields %>%
+                                 # Find all fields
+                                 tres <- res %>%
                                    purrr::transpose()
+                                 fields <- suppressWarnings(tres$fields %>%
+                                   purrr::transpose())
                                  
-                                 if ("geom" %in% names(fields)) fields$geom <- tidy_geom(fields$geom)
-                                 if ("geom_x_y" %in% names(fields)) fields$geom_x_y <- tidy_geom_xy(fields$geom_x_y)
-                                 if ("position" %in% names(fields)) {
-                                   fields$geom_x_y <- tidy_position(fields$position)
-                                   fields$position <- NULL
+                                 # Check if geo_shape field for GIS processing
+                                 geo_shape <- if ("geo_shape" %in% names(fields)) fields$geo_shape else NULL
+                                 
+                                 # Remove fields that have too many elements
+                                 lfields <- lapply(fields, function(x) length(unlist(x)))
+                                 fields <- fields[lfields <= nrows]
+                                 
+                                 records <- fields %>% 
+                                   lapply(function(x) {
+                                     x[sapply(x, is.null)] <- NA
+                                     unlist(x)}) %>%
+                                   dplyr::tbl_df()
+                                 
+                                 # Handle GIS information
+                                 geometry <- tres$geometry
+                                 if (!is.null(geometry)) {
+                                   geometry  <- geometry %>% 
+                                     purrr::transpose()
+                                   geometry$type <- unlist(geometry$type)
+                                   dfLonlat <- lapply(geometry$coordinates, function(x) dplyr::data_frame(lng = x[[1]], lat = x[[2]])) %>% 
+                                     dplyr::bind_rows()
+                                   records <- dplyr::bind_cols(records, dfLonlat)
                                  }
                                  
-                                 c(fields[!names(fields) %in% c("geom", "geom_x_y")] %>% lapply(unlist), fields[names(fields) %in% c("geom", "geom_x_y")]) %>%
-                                   dplyr::tbl_df()
+                                 if (!is.null(geo_shape)) {
+                                   geo_shape  <- geo_shape %>% 
+                                     purrr::transpose()
+                                   geo_shape$type <- unlist(geo_shape$type)
+                                   
+                                   # Can have LineString or MultiLineString, Polygon or MultiPolygon
+                                   dfGeoShape <- dplyr::data_frame(geo_shape = lapply(seq_along(geo_shape$type), function(i) {
+                                     switch(geo_shape$type[i],
+                                            LineString = tidy_line_string(geo_shape$coordinates[[i]]),
+                                            MultiLineString = lapply(geo_shape$coordinates[[i]], tidy_line_string),
+                                            Polygon = tidy_polygon(geo_shape$coordinates[[i]]),
+                                            MultiPolygon = lapply(geo_shape$coordinates[[i]], tidy_polygon))
+                                   }))
+                                   records <- dplyr::bind_cols(records, dfGeoShape)
+                                 }
                                } else dplyr::data_frame()
                                
                                self$data <- out
