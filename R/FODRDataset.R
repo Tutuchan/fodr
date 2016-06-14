@@ -114,6 +114,7 @@ FODRDataset <- R6::R6Class("FODRDataset",
                                    }))
                                    records <- dplyr::bind_cols(records, dfGeoShape)
                                  }
+                                 records
                                } else dplyr::data_frame()
                                
                                self$data <- out
