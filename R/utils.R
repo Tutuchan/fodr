@@ -127,7 +127,8 @@ portals <- function(){
                              "Tourisme Pas-de-Calais",
                              "D\u00E9partement des Hauts-de-Seine",
                              "Minist\u00E8re de l'Education Nationale, de l'Enseignement sup\u00E9rieur et de la Recherche",
-                             "ERDF"),
+                             "ERDF",
+                             "RTE"),
                     portals = c("ratp",
                                 "iledefrance",
                                 "infogreffe",
@@ -140,7 +141,8 @@ portals <- function(){
                                 "62",
                                 "92",
                                 "enesr",
-                                "erdf"),
+                                "erdf", 
+                                "rte"),
                     base_urls = c("http://data.ratp.fr",
                                   "http://data.iledefrance.fr",
                                   "http://datainfogreffe.fr",
@@ -153,7 +155,8 @@ portals <- function(){
                                   "http://tourisme62.opendatasoft.com",
                                   "https://opendata.hauts-de-seine.fr",
                                   "http://data.enseignementsup-recherche.gouv.fr",
-                                  "https://data.erdf.fr"))
+                                  "https://data.erdf.fr", 
+                                  "https://opendata.rte-france.com"))
 }
 
 get_base_url <- function(portal){
