@@ -31,7 +31,7 @@ The following portals are currently available with `fodr`:
 | STIF                                                                               | http://opendata.stif.info                     |     stif    |
 | STAR                                                                               | https://data.explore.star.fr                  |     star    |
 | Ministère de l'Education nationale, de l'enseignement supérieur et de la Recherche | http://data.enseignementsup-recherche.gouv.fr |    enesr    |
-| Tourisme Alpes-Maritimes                                                           | http://tourisme04.opendatasoft.com            |      04     |
+| Tourisme Alpes de Haute-Provence                                                           | http://tourisme04.opendatasoft.com            |      04     |
 | Tourisme Pas-de-Calais                                                             | http://tourisme62.opendatasoft.com            |      62     |
 | Département des Hauts-de-Seine                                                     | https://opendata.hauts-de-seine.fr            |      92     |
 | ERDF                                                                               | https://data.erdf.fr                          |     erdf    |
