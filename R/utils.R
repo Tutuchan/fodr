@@ -115,48 +115,59 @@ clean_list <- function(l) {
 
 # Constants
 portals <- function(){
-  dplyr::data_frame(name = c("RATP",
-                             "R\u00E9gion Ile-de-France",
-                             "Infogreffe",
-                             "Toulouse M\u00E9tropole",
-                             "STAR",
-                             "Issy-les-Moulineaux",
-                             "STIF",
-                             "Paris",
-                             "Tourisme Alpes-Maritimes",
-                             "Tourisme Pas-de-Calais",
-                             "D\u00E9partement des Hauts-de-Seine",
-                             "Minist\u00E8re de l'Education Nationale, de l'Enseignement sup\u00E9rieur et de la Recherche",
-                             "ERDF",
-                             "RTE"),
-                    portals = c("ratp",
-                                "iledefrance",
-                                "infogreffe",
-                                "toulouse",
-                                "star",
-                                "issy",
-                                "stif",
-                                "paris",
-                                "04",
-                                "62",
-                                "92",
-                                "enesr",
-                                "erdf", 
-                                "rte"),
-                    base_urls = c("http://data.ratp.fr",
-                                  "http://data.iledefrance.fr",
-                                  "http://datainfogreffe.fr",
-                                  "https://data.toulouse-metropole.fr",
-                                  "https://data.explore.star.fr",
-                                  "http://data.issy.com",
-                                  "http://opendata.stif.info",
-                                  "http://opendata.paris.fr",
-                                  "http://tourisme04.opendatasoft.com",
-                                  "http://tourisme62.opendatasoft.com",
-                                  "https://opendata.hauts-de-seine.fr",
-                                  "http://data.enseignementsup-recherche.gouv.fr",
-                                  "https://data.erdf.fr", 
-                                  "https://opendata.rte-france.com"))
+  dplyr::data_frame(
+    name = c(
+      "RATP",
+      "R\u00E9gion Ile-de-France",
+      "Infogreffe",
+      "Toulouse M\u00E9tropole",
+      "STAR",
+      "Issy-les-Moulineaux",
+      "STIF",
+      "Paris",
+      "Tourisme Alpes-Maritimes",
+      "Tourisme Pas-de-Calais",
+      "D\u00E9partement des Hauts-de-Seine",
+      "Minist\u00E8re de l'Education Nationale, de l'Enseignement sup\u00E9rieur et de la Recherche",
+      "ERDF",
+      "RTE",
+      "OpenDataSoft Public"
+    ),
+    portals = c(
+      "ratp",
+      "iledefrance",
+      "infogreffe",
+      "toulouse",
+      "star",
+      "issy",
+      "stif",
+      "paris",
+      "04",
+      "62",
+      "92",
+      "enesr",
+      "erdf", 
+      "rte",
+      "ods"
+    ),
+    base_urls = c(
+      "http://data.ratp.fr",
+      "http://data.iledefrance.fr",
+      "http://datainfogreffe.fr",
+      "https://data.toulouse-metropole.fr",
+      "https://data.explore.star.fr",
+      "http://data.issy.com",
+      "http://opendata.stif.info",
+      "http://opendata.paris.fr",
+      "http://tourisme04.opendatasoft.com",
+      "http://tourisme62.opendatasoft.com",
+      "https://opendata.hauts-de-seine.fr",
+      "http://data.enseignementsup-recherche.gouv.fr",
+      "https://data.erdf.fr", 
+      "https://opendata.rte-france.com",
+      "https://public.opendatasoft.com"
+    )
+  )
 }
 
 get_base_url <- function(portal){
@@ -185,3 +196,5 @@ datasets_sortables <- function(){
     "issued",
     "created")
 }
+
+MAX_API_RECORDS <- 10000

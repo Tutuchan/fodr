@@ -1,14 +1,14 @@
 Package: fodr
 Type: Package
 Title: Interact with French open data services
-Version: 0.1.1.9001
-Date: 2016-06-14
+Version: 0.1.1.9002
+Date: 2016-12-01
 Authors@R: person("Pierre", "Formont", email = "pierre.formont@gmail.com",
                   role = c("aut", "cre"))
 Description: Connect to various French open data providers and fetch the available data.
 License: MIT + file LICENSE
 LazyData: TRUE
-Imports:
+Imports: 
     curl,
     dplyr,
     jsonlite,
