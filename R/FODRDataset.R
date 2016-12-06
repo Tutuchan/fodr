@@ -61,8 +61,38 @@ FODRDataset <- R6::R6Class(
       if (is.null(output)) output <- fname
       curl::curl_download(url = url, destfile = output)
     },
-    get_records = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL, debug = FALSE) {
-      if (is.null(nrows)) nrows <- min(self$info$metas$records_count, MAX_API_RECORDS)
+    get_records = function(
+      nrows = NULL, 
+      refine = NULL, 
+      exclude = NULL, 
+      sort = NULL, 
+      q = NULL, 
+      lang = NULL, 
+      geofilter.distance = NULL, 
+      geofilter.polygon = NULL, 
+      format = NULL,
+      callback = NULL,
+      debug = FALSE,
+      ...
+      ) {
+      if (is.null(nrows)) nrows <- self$info$metas$records_count
+      
+      if (nrows > MAX_API_RECORDS) {
+        url <- get_portal_url(self$portal, "records") %>%
+          paste0("download?dataset=", self$id) %>%
+          add_parameters_to_url(
+            refine = refine, 
+            exclude = exclude,
+            q = q, 
+            lang = lang, 
+            geofilter.distance = geofilter.distance,
+            geofilter.polygon = geofilter.polygon, 
+            format = format,
+            callback = callback,
+            debug = debug
+          )
+        }
+      
       url <- get_portal_url(self$portal, "records") %>%
         paste0("search?dataset=", self$id) %>%
         add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon, debug)

@@ -8,7 +8,14 @@ get_portal_url <- function(portal, endpoint){
 search_datasets <- function(portal, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
   url <- get_portal_url(portal, "datasets") %>%
     paste0("search/") %>%
-    add_parameters_to_url(nrows, refine, exclude, sort, q, lang)
+    add_parameters_to_url(
+      nrows = nrows, 
+      refine = refine, 
+      exclude = exclude, 
+      sort = sort, 
+      q = q, 
+      lang = lang
+    )
   list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
 }
 
@@ -56,57 +63,79 @@ tidy_line_string <- function(x) {
 }
 
 # Add additional parameters to the url
-add_parameters_to_url <- function(url, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
-                                  lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL, debug = FALSE) {
-  if (all(is.null(nrows),
-          is.null(refine),
-          is.null(exclude),
-          is.null(sort),
-          is.null(q),
-          is.null(lang),
-          is.null(geofilter.distance),
-          is.null(geofilter.polygon))) return(url) else additional_url <- c()
-          
-          # Handle nrows
-          if (!is.null(nrows)) additional_url <- c(additional_url, rows = nrows)
-          
-          # Handle refine
-          if (!is.null(refine)) for (i in 1:length(refine)) {
-            facet = names(refine)[i]
-            val <- refine[[i]]
-            names(val) = paste0("refine.", facet)
-            additional_url <- c(additional_url, facet = facet, val)
-          }
-          
-          # Handle exclude
-          if (!is.null(exclude)) for (i in 1:length(exclude)) {
-            facet = names(exclude)[i]
-            val <- exclude[[i]]
-            names(val) = paste0("exclude.", facet)
-            additional_url <- c(additional_url, facet = facet, val)
-          }
-          
-          # Handle sort
-          if (!is.null(sort)) additional_url <- c(additional_url, sort = sort)
-          
-          # Handle q
-          if (!is.null(q)) additional_url <- c(additional_url, q = q)
-          
-          # Handle geofilter.distance
-          if (!is.null(geofilter.distance)) additional_url <- c(additional_url, geofilter.distance = paste(geofilter.distance, collapse = ","))
-          
-          # Handle geofilter.polygon
-          if (!is.null(geofilter.polygon)) {
-            geofilter.polygon <- (tidyr::unite(geofilter.polygon, polygon, lat, lon, sep = ",") %>%
-                                    dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
-              paste(collapse = ",")
-            additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)
-          }
-          sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
-          url <- paste0(url, sep, paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
-          if (debug) print(url)
-          url
-          
+add_parameters_to_url <- function(
+  url, 
+  nrows = NULL, 
+  refine = NULL, 
+  exclude = NULL, 
+  sort = NULL, 
+  q = NULL,
+  lang = NULL, 
+  geofilter.distance = NULL, 
+  geofilter.polygon = NULL, 
+  format = NULL,
+  callback = NULL,
+  debug = FALSE, 
+  ...
+) {
+  if (
+    all(
+      is.null(nrows),
+      is.null(refine),
+      is.null(exclude),
+      is.null(sort),
+      is.null(q),
+      is.null(lang),
+      is.null(geofilter.distance),
+      is.null(geofilter.polygon),
+      is.null(format),
+      is.null(callback)
+    )
+  ) return(url) else additional_url <- c()
+  
+  # Handle nrows
+  if (!is.null(nrows)) additional_url <- c(additional_url, rows = nrows)
+  
+  # Handle refine
+  if (!is.null(refine)) for (i in 1:length(refine)) {
+    facet = names(refine)[i]
+    val <- refine[[i]]
+    names(val) = paste0("refine.", facet)
+    additional_url <- c(additional_url, facet = facet, val)
+  }
+  
+  # Handle exclude
+  if (!is.null(exclude)) for (i in 1:length(exclude)) {
+    facet = names(exclude)[i]
+    val <- exclude[[i]]
+    names(val) = paste0("exclude.", facet)
+    additional_url <- c(additional_url, facet = facet, val)
+  }
+  
+  # Handle sort
+  if (!is.null(sort)) additional_url <- c(additional_url, sort = sort)
+  
+  # Handle q
+  if (!is.null(q)) additional_url <- c(additional_url, q = q)
+  
+  # Handle geofilter.distance
+  if (!is.null(geofilter.distance)) additional_url <- c(additional_url, geofilter.distance = paste(geofilter.distance, collapse = ","))
+  
+  # Handle geofilter.polygon
+  if (!is.null(geofilter.polygon)) {
+    geofilter.polygon <- (tidyr::unite(geofilter.polygon, polygon, lat, lon, sep = ",") %>%
+                            dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
+      paste(collapse = ",")
+    additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)
+  }
+  
+  # Handle format 
+  if (!is.null(format)) additional_url <- c(additional_url, format = format)
+  
+  sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
+  url <- paste0(url, sep, paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
+  if (debug) print(url)
+  url
 }
 
 clean_list <- function(l) {
