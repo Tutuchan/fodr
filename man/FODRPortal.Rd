@@ -3,20 +3,13 @@
 \docType{class}
 \name{FODRPortal}
 \alias{FODRPortal}
-\title{Main portal class}
+\title{main portal class}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
-\usage{
-FODRPortal
-}
 \value{
 An object of class \code{\link{FODRPortal}} with methods designed to retrieve datasets from an open data portal.
-#' @section Methods:
-\describe{
-  \item{\code{\link[=portal_search]{search}}}{This method retrieves datasets from the portal.}}
 }
 \description{
-This is the entry point to retrieve datasets from a portal. Initialize a \code{FODRPortal}
-with a \code{portal}.
+This is the entry point to retrieve datasets from a portal. Initialize a \code{FODRPortal} with a \code{portal} using the \code{\link{fodr_portal}} wrapper.
 }
 \section{Fields}{
 
@@ -33,5 +26,10 @@ with a \code{portal}.
 
 \item{\code{themes}}{a character vector, the unique themes datasets on the portals can be associated with}
 }}
+\section{Methods}{
+
+\describe{
+  \item{\code{\link[=portal_search]{search}}}{This method retrieves datasets from the portal.}}
+}
 \keyword{datasets}
 

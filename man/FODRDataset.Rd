@@ -3,17 +3,14 @@
 \docType{class}
 \name{FODRDataset}
 \alias{FODRDataset}
-\title{Main dataset class}
+\title{main dataset class}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
-\usage{
-FODRDataset
-}
 \value{
 An object of class \code{\link{FODRDataset}} with methods designed to retrieve data from an open dataset.
 }
 \description{
-This is the entry point to retrieve records from a dataset. Initialize a \code{FODRDataset}
-with a \code{portal} and an \code{id}.
+This is the entry point to retrieve records from a dataset. 
+Initialize a \code{FODRDataset} with a \code{portal} and an \code{id} using the \code{\link{fodr_dataset}} wrapper.
 }
 \section{Fields}{
 
@@ -45,7 +42,8 @@ with a \code{portal} and an \code{id}.
 
 \describe{
   \item{\code{\link{get_attachments}}}{This method retrieves attachments from the dataset.}
-  \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}}
+  \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}
+}
 }
 \keyword{datasets}
 

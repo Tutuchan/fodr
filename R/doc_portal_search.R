@@ -1,4 +1,4 @@
-#' Fetch datasets
+#' fetch datasets on a portal
 #'
 #' This method is used to retrieve datasets from a portal.
 #'
@@ -26,6 +26,9 @@
 #' @param lang a character, the language used in the \code{q} parameter
 #' @param theme a character, one of the themes of the portal
 #' @name portal_search
-#' @examples \donttest{portal$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL,
-#' q = NULL, lang = NULL, theme = NULL)}
+#' @examples 
+#' \donttest{
+#' portal$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL,
+#' q = NULL, lang = NULL, theme = NULL)
+#' }
 NULL

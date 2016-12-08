@@ -9,6 +9,9 @@ fodr_portal(portal)
 \arguments{
 \item{portal}{a character}
 }
+\description{
+A wrapper around \code{FODRPortal$new(portal)} for convenience.
+}
 \examples{
 \dontrun{
 portal <- fodr_portal("paris")

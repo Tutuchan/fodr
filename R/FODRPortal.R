@@ -1,7 +1,6 @@
-#' Main portal class
+#' main portal class
 #'
-#' This is the entry point to retrieve datasets from a portal. Initialize a \code{FODRPortal}
-#' with a \code{portal}.
+#' This is the entry point to retrieve datasets from a portal. Initialize a \code{FODRPortal} with a \code{portal} using the \code{\link{fodr_portal}} wrapper.
 #'
 #' @docType class
 #' @field portal a character, the portal name
@@ -11,10 +10,13 @@
 #' @field sortables a character vector, indicates on which fields sorting is allowed. For a 
 #' \code{\link{FODRPortal}}, these are constant.
 #' @field themes a character vector, the unique themes datasets on the portals can be associated with
+#' 
 #' @return An object of class \code{\link{FODRPortal}} with methods designed to retrieve datasets from an open data portal.
-#' #' @section Methods:
+#' 
+#' @section Methods:
 #' \describe{
 #'   \item{\code{\link[=portal_search]{search}}}{This method retrieves datasets from the portal.}}
+#' @usage NULL
 #' @export
 FODRPortal <- R6::R6Class(
   "FODRPortal",
@@ -90,6 +92,9 @@ FODRPortal <- R6::R6Class(
 
 
 #' @title initialize a portal
+#' 
+#' @description A wrapper around \code{FODRPortal$new(portal)} for convenience.
+#' 
 #' @param portal a character
 #' 
 #' @examples 

@@ -22,9 +22,13 @@ format (e.g. \code{c(48.57, 2.24, 500)})}
 \item{geofilter.polygon}{a data.frame with two columns named \code{lat} and \code{lon}}
 
 \item{debug}{a logical, if TRUE, prints the url sent to the portal}
+
+\item{quiet}{a logical, if FALSE, information will be printed when using the \code{download} API}
 }
 \description{
-This method is used to retrieve records for a specific dataset.
+This method is used to retrieve records for a specific dataset. If the number of rows to return
+is higher than the maximum allowed by the \code{search} API (see the constants section in \code{\link{fodr}}),
+the \code{download} API is used.
 }
 \details{
 \code{refine} and \code{exclude}, if set, must be named lists where the names are the

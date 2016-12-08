@@ -2,7 +2,7 @@
 % Please edit documentation in R/doc_portal_search.R
 \name{portal_search}
 \alias{portal_search}
-\title{Fetch datasets}
+\title{fetch datasets on a portal}
 \arguments{
 \item{nrows}{an integer, indicates the number of records to fetch (defaults to NULL, i.e. all matching records are fetched)}
 
@@ -39,7 +39,9 @@ parameter but is not implemented yet.
 \code{theme} can be set to filter only datasets with a specific theme.
 }
 \examples{
-\donttest{portal$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL,
-q = NULL, lang = NULL, theme = NULL)}
+\donttest{
+portal$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL,
+q = NULL, lang = NULL, theme = NULL)
+}
 }
 

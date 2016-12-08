@@ -11,6 +11,9 @@ fodr_dataset(portal, id)
 
 \item{id}{a character}
 }
+\description{
+A wrapper around \code{FODRDataset$new(portal, id)} for convenience.
+}
 \examples{
 \dontrun{
 votes <- fodr_dataset("paris", "resultats-des-votes-budget-participatif-2016")

@@ -73,16 +73,20 @@ get_sortables <- function(fields){
 tidy_polygon <- function(x) {
   y <- x[[1]] %>% 
     purrr::transpose()
-  dplyr::data_frame(lng = unlist(y[[1]]),
-                    lat = unlist(y[[2]]))
+  tibble::tibble(
+    lng = unlist(y[[1]]),
+    lat = unlist(y[[2]])
+  )
 }
 
 # Transform LineString elements in the geo_shape column
 tidy_line_string <- function(x) {
   y <- x %>% 
     purrr::transpose()
-  dplyr::data_frame(lng = unlist(y[[1]]),
-                    lat = unlist(y[[2]]))
+  tibble::tibble(
+    lng = unlist(y[[1]]),
+    lat = unlist(y[[2]])
+  )
 }
 
 # Add additional parameters to the url
@@ -184,13 +188,14 @@ clean_list <- function(l) {
 
 get_base_url <- function(portal){
   (portals() %>%
-     dplyr::filter(portals == portal))$base_urls
+     dplyr::filter(portals == portal)
+   )$base_urls
 }
 
 # Constants -------------------------------------------------------------------------------------------------------
 
 portals <- function(){
-  dplyr::data_frame(
+  tibble::tibble(
     name = c(
       "RATP",
       "R\u00E9gion Ile-de-France",

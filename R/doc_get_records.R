@@ -1,6 +1,8 @@
 #' fetch dataset records
 #'
-#' This method is used to retrieve records for a specific dataset.
+#' This method is used to retrieve records for a specific dataset. If the number of rows to return
+#' is higher than the maximum allowed by the \code{search} API (see the constants section in \code{\link{fodr}}),
+#' the \code{download} API is used.
 #'
 #' \code{refine} and \code{exclude}, if set, must be named lists where the names are the
 #' facets to use and the values of the list, the values to pick or exclude. For example,
@@ -34,10 +36,12 @@
 #' format (e.g. \code{c(48.57, 2.24, 500)})
 #' @param geofilter.polygon a data.frame with two columns named \code{lat} and \code{lon}
 #' @param debug a logical, if TRUE, prints the url sent to the portal
-#' @name get_records
+#' @param quiet a logical, if FALSE, information will be printed when using the \code{download} API
+#' 
 #' @examples 
 #' \donttest{
 #' votes <- fodr_dataset("paris", "resultats-des-votes-budget-participatif-2016")
 #' votes$get_records()
 #' }
+#' @name get_records
 NULL

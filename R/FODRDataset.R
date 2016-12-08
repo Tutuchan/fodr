@@ -1,9 +1,10 @@
-#' Main dataset class
+#' main dataset class
 #'
-#' This is the entry point to retrieve records from a dataset. Initialize a \code{FODRDataset}
-#' with a \code{portal} and an \code{id}.
+#' @description This is the entry point to retrieve records from a dataset. 
+#' Initialize a \code{FODRDataset} with a \code{portal} and an \code{id} using the \code{\link{fodr_dataset}} wrapper.
 #'
 #' @docType class
+#' 
 #' @field portal a character, must be one of the available portals
 #' @field data a data.frame returned by the \code{\link[=get_records]{get_records}} method
 #' @field fields a character vector
@@ -17,13 +18,18 @@
 #'  \item alternative_exports: \emph{unknown purpose}
 #'  \item billing_plans: \emph{unknown purpose}
 #' }
+#' 
 #' @field sortables a character vector containing a subset of \strong{fields}, indicates on which fields sorting is allowed
 #' @field url a character, the actual url sent to the API
 #' @return An object of class \code{\link{FODRDataset}} with methods designed to retrieve data from an open dataset.
+#' 
 #' @section Methods:
 #' \describe{
 #'   \item{\code{\link{get_attachments}}}{This method retrieves attachments from the dataset.}
-#'   \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}}
+#'   \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}
+#' }
+#' 
+#' @usage NULL
 #'   
 #' @export
 FODRDataset <- R6::R6Class(
@@ -82,14 +88,16 @@ FODRDataset <- R6::R6Class(
       lang = NULL, 
       geofilter.distance = NULL, 
       geofilter.polygon = NULL, 
-      format = NULL,
-      callback = NULL,
+      quiet = TRUE,
       debug = FALSE,
       ...
       ) {
       if (is.null(nrows)) nrows <- self$info$metas$records_count
       
       if (nrows > MAX_API_RECORDS) {
+        if (!quiet) cat(
+          "Too many rows for direct call to API, downloading file ...\n"
+          )
         url <- get_portal_url(self$portal, "records") %>%
           paste0("download?dataset=", self$id) %>%
           add_parameters_to_url(
@@ -99,30 +107,31 @@ FODRDataset <- R6::R6Class(
             lang = lang, 
             geofilter.distance = geofilter.distance,
             geofilter.polygon = geofilter.polygon, 
-            format = format,
-            callback = callback,
+            format = "json",
             debug = debug
           )
+        response <- if (!quiet) httr::GET(url, httr::progress()) else 
+          httr::GET(url)
+        if (!quiet) cat("\nFile downloaded, now parsing ...")
+        res <- httr::content(response)
+      } else {
+        url <- get_portal_url(self$portal, "records") %>%
+          paste0("search?dataset=", self$id) %>%
+          add_parameters_to_url(
+            nrows = nrows, 
+            refine = refine, 
+            exclude = exclude, 
+            sort = sort, 
+            q = q, 
+            lang = lang, 
+            geofilter.distance = geofilter.distance, 
+            geofilter.polygon = geofilter.polygon,
+            debug = debug,
+            ...
+          )
+        res <- from_json(url)$records
         }
-      url <- get_portal_url(self$portal, "records") %>%
-        paste0("search?dataset=", self$id) %>%
-        add_parameters_to_url(
-          nrows, 
-          refine, 
-          exclude, 
-          sort, 
-          q, 
-          lang, 
-          geofilter.distance, 
-          geofilter.polygon,
-          debug
-        )
       
-      res <- jsonlite::fromJSON(
-        url, 
-        simplifyVector = FALSE, 
-        flatten = FALSE
-      )$records
       
       out <- if (length(res) > 0) {
         nrows <- length(res)
@@ -146,7 +155,7 @@ FODRDataset <- R6::R6Class(
           lapply(function(x) {
             x[vapply(x, is.null, logical(1))] <- NA
             unlist(x)}) %>%
-          dplyr::tbl_df()
+          tibble::tibble()
         
         # Handle GIS information
         geometry <- tres$geometry
@@ -155,7 +164,7 @@ FODRDataset <- R6::R6Class(
             purrr::transpose()
           geometry$type <- unlist(geometry$type)
           dfLonlat <- lapply(geometry$coordinates, function(x) {
-            dplyr::data_frame(lng = x[[1]], lat = x[[2]])
+            tibble::tibble(lng = x[[1]], lat = x[[2]])
           }) %>% 
             dplyr::bind_rows()
           records <- dplyr::bind_cols(records, dfLonlat)
@@ -216,6 +225,8 @@ FODRDataset <- R6::R6Class(
 )
 
 #' @title initialize a dataset
+#' 
+#' @description A wrapper around \code{FODRDataset$new(portal, id)} for convenience.
 #' 
 #' @param portal a character in \code{\link{list_portals}}
 #' @param id a character
