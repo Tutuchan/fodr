@@ -75,13 +75,32 @@ FODRPortal <- R6::R6Class(
         search_datasets(
           portal = self$portal, 
           nrows = self$n_datasets
-          )$data$datasets, function(dataset) {
-        dataset$metas$theme
-      }) %>%
+        )$data$datasets, function(dataset) {
+          dataset$metas$theme
+        }) %>%
         unlist()
       private$themes_freq <- as.data.frame(table(themes))
       themes %>%
         unique %>%
         sort
     },
-    themes_freq = NULL))
+    themes_freq = NULL
+  )
+)
+
+
+#' @title initialize a portal
+#' @param portal a character
+#' 
+#' @examples 
+#' \dontrun{
+#' portal <- fodr_portal("paris")
+#' portal
+#' }
+#' 
+#' @name fodr_portal 
+#' 
+#' @export
+fodr_portal <- function(portal){
+  FODRPortal$new(portal)
+}

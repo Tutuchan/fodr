@@ -1,4 +1,4 @@
-#' Fetch dataset records
+#' fetch dataset records
 #'
 #' This method is used to retrieve records for a specific dataset.
 #'
@@ -35,6 +35,9 @@
 #' @param geofilter.polygon a data.frame with two columns named \code{lat} and \code{lon}
 #' @param debug a logical, if TRUE, prints the url sent to the portal
 #' @name get_records
-#' @examples \donttest{dts$get_records(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
-#' lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)}
+#' @examples 
+#' \donttest{
+#' votes <- fodr_dataset("paris", "resultats-des-votes-budget-participatif-2016")
+#' votes$get_records()
+#' }
 NULL

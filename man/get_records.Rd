@@ -2,7 +2,7 @@
 % Please edit documentation in R/doc_get_records.R
 \name{get_records}
 \alias{get_records}
-\title{Fetch dataset records}
+\title{fetch dataset records}
 \arguments{
 \item{nrows}{an integer, indicates the number of records to fetch (defaults to 10)}
 
@@ -50,7 +50,9 @@ specified distance from the specified point, if applicable.
 specified polygon, if applicable.
 }
 \examples{
-\donttest{dts$get_records(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL,
-lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL)}
+\donttest{
+votes <- fodr_dataset("paris", "resultats-des-votes-budget-participatif-2016")
+votes$get_records()
+}
 }
 

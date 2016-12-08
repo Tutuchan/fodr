@@ -196,4 +196,22 @@ FODRDataset <- R6::R6Class(
         cat()
       cat("\n---------------------------------------------------------------\n")
     }
-  ))
+  )
+)
+
+#' @title initialize a dataset
+#' 
+#' @param portal a character in \code{\link{list_portals}}
+#' @param id a character
+#' 
+#' @examples 
+#' \dontrun{
+#' votes <- fodr_dataset("paris", "resultats-des-votes-budget-participatif-2016")
+#' votes
+#' }
+#' 
+#' @name fodr_dataset
+#' @export
+fodr_dataset <- function(portal, id){
+  FODRDataset$new(portal, id)
+}

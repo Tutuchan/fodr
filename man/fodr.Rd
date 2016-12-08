@@ -2,7 +2,7 @@
 % Please edit documentation in R/fodr.R
 \name{fodr}
 \alias{fodr}
-\title{the fodr package}
+\title{fodr: fetch French Open Data with R}
 \description{
 Fetch data from various French Open Data portals. Use 
 \code{\link{fodr_dataset}} and \code{\link{fodr_portal}} to retrieve records.
