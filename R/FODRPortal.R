@@ -47,6 +47,7 @@ FODRPortal <- R6::R6Class(
       
       n_datasets <- if (is.null(theme)) nrows else 
         private$themes_freq$Freq[private$themes_freq$themes == theme]
+      
       listDatasets <- search_datasets(
         portal = self$portal,
         nrows, refine, 
@@ -55,11 +56,14 @@ FODRPortal <- R6::R6Class(
         q, 
         lang
       )$data$datasets
-      cat(paste(n_datasets, "datasets found ..."), "\n")
+      
+      cat(paste(length(listDatasets), "datasets found ..."), "\n")
+      
       self$data <- lapply(listDatasets, function(dataset){
         if (!is.null(theme)) if (all(dataset$metas$theme != theme)) return(NULL)
         FODRDataset$new(self$portal, dataset$datasetid)
-      }) %>% clean_list()
+      }) %>% 
+        clean_list()
       self$data
     },
     print = function() {
