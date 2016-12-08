@@ -24,6 +24,7 @@
 #' \describe{
 #'   \item{\code{\link{get_attachments}}}{This method retrieves attachments from the dataset.}
 #'   \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}}
+#'   
 #' @export
 FODRDataset <- R6::R6Class(
   "FODRDataset",
@@ -49,36 +50,77 @@ FODRDataset <- R6::R6Class(
       self$info$features <- unlist(dataset$features)
       dataset$metas$keywords <- unlist(dataset$metas$keyword)
       dataset$metas$keyword <- NULL
-      self$info <- c(self$info, dataset[c("metas", "attachments", "alternative_exports", "billing_plans")])
-      self$info$attachments <- self$info$attachments %>% purrr::transpose() %>% lapply(unlist)
+      self$info <- c(
+        self$info, 
+        dataset[c(
+          "metas", 
+          "attachments", 
+          "alternative_exports", 
+          "billing_plans"
+        )]
+      )
+      self$info$attachments <- self$info$attachments %>% 
+        purrr::transpose() %>% 
+        lapply(unlist)
       self$fields <- dataset$fields
       self$facets <- get_facets(self$fields)
       self$sortables <- get_sortables(self$fields)
     },
     get_attachments = function(fname, output = NULL){
-      id <- self$info$attachments$id[which(self$info$attachments$title == fname)]
+      attachments <- self$info$attachments
+      id <- attachments$id[which(attachments$title == fname)]
       url <- paste0(self$url, "attachments/", id)
       if (is.null(output)) output <- fname
       curl::curl_download(url = url, destfile = output)
     },
-    get_records = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, geofilter.distance = NULL, geofilter.polygon = NULL, debug = FALSE) {
-      if (is.null(nrows)) nrows <- min(self$info$metas$records_count, MAX_API_RECORDS)
+    get_records = function(
+      nrows = NULL, 
+      refine = NULL, 
+      exclude = NULL, 
+      sort = NULL, 
+      q = NULL, 
+      lang = NULL, 
+      geofilter.distance = NULL, 
+      geofilter.polygon = NULL, 
+      debug = FALSE
+    ) {
+      if (is.null(nrows)) nrows <- min(
+        self$info$metas$records_count, 
+        MAX_API_RECORDS
+      )
       url <- get_portal_url(self$portal, "records") %>%
         paste0("search?dataset=", self$id) %>%
-        add_parameters_to_url(nrows, refine, exclude, sort, q, lang, geofilter.distance, geofilter.polygon, debug)
+        add_parameters_to_url(
+          nrows, 
+          refine, 
+          exclude, 
+          sort, 
+          q, 
+          lang, 
+          geofilter.distance, 
+          geofilter.polygon,
+          debug
+        )
       
-      res <- jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE)$records
+      res <- jsonlite::fromJSON(
+        url, 
+        simplifyVector = FALSE, 
+        flatten = FALSE
+      )$records
       
       out <- if (length(res) > 0) {
         nrows <- length(res)
         # Find all fields
         tres <- res %>%
           purrr::transpose()
-        fields <- suppressWarnings(tres$fields %>%
-                                     purrr::transpose())
+        fields <- suppressWarnings(
+          tres$fields %>%
+            purrr::transpose()
+        )
         
         # Check if geo_shape field for GIS processing
-        geo_shape <- if ("geo_shape" %in% names(fields)) fields$geo_shape else NULL
+        geo_shape <- if ("geo_shape" %in% names(fields)) fields$geo_shape else 
+          NULL
         
         # Remove fields that have too many elements
         lfields <- lapply(fields, function(x) length(unlist(x)))
@@ -86,7 +128,7 @@ FODRDataset <- R6::R6Class(
         
         records <- fields %>% 
           lapply(function(x) {
-            x[sapply(x, is.null)] <- NA
+            x[vapply(x, is.null, logical(1))] <- NA
             unlist(x)}) %>%
           dplyr::tbl_df()
         
@@ -96,7 +138,9 @@ FODRDataset <- R6::R6Class(
           geometry  <- geometry %>% 
             purrr::transpose()
           geometry$type <- unlist(geometry$type)
-          dfLonlat <- lapply(geometry$coordinates, function(x) dplyr::data_frame(lng = x[[1]], lat = x[[2]])) %>% 
+          dfLonlat <- lapply(geometry$coordinates, function(x) {
+            dplyr::data_frame(lng = x[[1]], lat = x[[2]])
+          }) %>% 
             dplyr::bind_rows()
           records <- dplyr::bind_cols(records, dfLonlat)
         }
@@ -107,13 +151,16 @@ FODRDataset <- R6::R6Class(
           geo_shape$type <- unlist(geo_shape$type)
           
           # Can have LineString or MultiLineString, Polygon or MultiPolygon
-          dfGeoShape <- dplyr::data_frame(geo_shape = lapply(seq_along(geo_shape$type), function(i) {
-            switch(geo_shape$type[i],
-                   LineString = tidy_line_string(geo_shape$coordinates[[i]]),
-                   MultiLineString = lapply(geo_shape$coordinates[[i]], tidy_line_string),
-                   Polygon = tidy_polygon(geo_shape$coordinates[[i]]),
-                   MultiPolygon = lapply(geo_shape$coordinates[[i]], tidy_polygon))
-          }))
+          dfGeoShape <- dplyr::data_frame(
+            geo_shape = lapply(seq_along(geo_shape$type), function(i) {
+              coords <- geo_shape$coordinates[[i]]
+              switch(
+                geo_shape$type[i],
+                LineString = tidy_line_string(coords),
+                MultiLineString = lapply(coords, tidy_line_string),
+                Polygon = tidy_polygon(coords),
+                MultiPolygon = lapply(coords, tidy_polygon))
+            }))
           records <- dplyr::bind_cols(records, dfGeoShape)
         }
         records
@@ -125,18 +172,28 @@ FODRDataset <- R6::R6Class(
     
     print = function() {
       cat("FODRDataset object\n")
-      cat("--------------------------------------------------------------------\n")
+      cat("---------------------------------------------------------------\n")
       cat(paste("Dataset id:", self$id, "\n"))
-      cat(paste("Theme:", self$info$meta$theme, "\n"))
-      cat(paste("Keywords:", paste(self$info$meta$keywords, collapse = ", "), "\n"))
+      cat(paste("Theme:", toString(self$info$meta$theme), "\n"))
+      cat(paste("Keywords:", toString(self$info$meta$keywords), "\n"))
       cat(paste("Publisher:", self$info$meta$publisher, "\n"))
-      cat("--------------------------------------------------------------------\n")
+      cat("---------------------------------------------------------------\n")
       cat(paste("Number of records:", self$info$meta$records_count, "\n"))
       if (is.null(nfiles <- nrow(self$info$attachments))) nfiles <- 0
       cat(paste("Number of files:", nfiles, "\n"))
       cat(paste("Modified:", as.Date(self$info$meta$modified), "\n"))
-      if (!is.null(self$facets)) cat(paste("Facets:", paste(self$facets, collapse = ", "), "\n"))
-      if (!is.null(self$sortables)) cat(paste("Sortables:", paste(self$sortables, collapse = ", "), "\n"))
-      cat("--------------------------------------------------------------------\n")
+      if (!is.null(self$facets)) 
+        cat(paste("Facets:", toString(self$facets), "\n"))
+      if (!is.null(self$sortables)) 
+        cat(paste("Sortables:", toString(self$sortables), "\n"))
+      cat("---------------------------------------------------------------\n")
+      cat("Description:\n")
+      self$info$metas$description %>% 
+        gsub("<p>|<br/>", "\n", .) %>% 
+        gsub("<.*?>", "", .) %>% 
+        gsub("\\t", "", .) %>%
+        trimws() %>% 
+        cat()
+      cat("\n---------------------------------------------------------------\n")
     }
   ))
