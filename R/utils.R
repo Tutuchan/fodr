@@ -113,7 +113,14 @@ clean_list <- function(l) {
   l[!sapply(l, is.null)]
 }
 
-# Constants
+
+get_base_url <- function(portal){
+  (portals() %>%
+     dplyr::filter(portals == portal))$base_urls
+}
+
+# Constants -------------------------------------------------------------------------------------------------------
+
 portals <- function(){
   dplyr::data_frame(
     name = c(
@@ -168,11 +175,6 @@ portals <- function(){
       "https://public.opendatasoft.com"
     )
   )
-}
-
-get_base_url <- function(portal){
-  (portals() %>%
-     dplyr::filter(portals == portal))$base_urls
 }
 
 datasets_facets <- function(){
