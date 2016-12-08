@@ -1,3 +1,12 @@
+from_json <- function(url, ...) {
+  jsonlite::fromJSON(
+    url, 
+    ..., 
+    simplifyVector = FALSE, 
+    flatten = FALSE
+  )
+}
+
 # Get base portal API url
 get_portal_url <- function(portal, endpoint){
   stopifnot(portal %in% portals()$portals)
@@ -5,7 +14,15 @@ get_portal_url <- function(portal, endpoint){
 }
 
 # Search for datasets on a portal
-search_datasets <- function(portal, nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL) {
+search_datasets <- function(
+  portal, 
+  nrows = NULL, 
+  refine = NULL, 
+  exclude = NULL, 
+  sort = NULL, 
+  q = NULL, 
+  lang = NULL
+) {
   url <- get_portal_url(portal, "datasets") %>%
     paste0("search/") %>%
     add_parameters_to_url(
@@ -16,14 +33,20 @@ search_datasets <- function(portal, nrows = NULL, refine = NULL, exclude = NULL,
       q = q, 
       lang = lang
     )
-  list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
+  list(
+    data = from_json(url),
+    url = url
+  )
 }
 
 # Get dataset meta data
 get_dataset <- function(portal, id) {
   url <- get_portal_url(portal, "datasets") %>%
     paste0(id, "/")
-  list(data = jsonlite::fromJSON(url, simplifyVector = FALSE, flatten = FALSE), url = url)
+  list(
+    data = from_json(url),
+    url = url
+  )
 }
 
 get_facets <- function(fields){
@@ -97,18 +120,18 @@ add_parameters_to_url <- function(
   if (!is.null(nrows)) additional_url <- c(additional_url, rows = nrows)
   
   # Handle refine
-  if (!is.null(refine)) for (i in 1:length(refine)) {
-    facet = names(refine)[i]
+  if (!is.null(refine)) for (i in seq_along(refine)) {
+    facet <- names(refine)[i]
     val <- refine[[i]]
-    names(val) = paste0("refine.", facet)
+    names(val) <- paste0("refine.", facet)
     additional_url <- c(additional_url, facet = facet, val)
   }
   
   # Handle exclude
-  if (!is.null(exclude)) for (i in 1:length(exclude)) {
-    facet = names(exclude)[i]
+  if (!is.null(exclude)) for (i in seq_along(exclude)) {
+    facet <- names(exclude)[i]
     val <- exclude[[i]]
-    names(val) = paste0("exclude.", facet)
+    names(val) <- paste0("exclude.", facet)
     additional_url <- c(additional_url, facet = facet, val)
   }
   
@@ -119,30 +142,53 @@ add_parameters_to_url <- function(
   if (!is.null(q)) additional_url <- c(additional_url, q = q)
   
   # Handle geofilter.distance
-  if (!is.null(geofilter.distance)) additional_url <- c(additional_url, geofilter.distance = paste(geofilter.distance, collapse = ","))
+  if (!is.null(geofilter.distance)) additional_url <- c(
+    additional_url, 
+    geofilter.distance = toString(geofilter.distance)
+  )
   
   # Handle geofilter.polygon
   if (!is.null(geofilter.polygon)) {
-    geofilter.polygon <- (tidyr::unite(geofilter.polygon, polygon, lat, lon, sep = ",") %>%
-                            dplyr::mutate(polygon = paste0("(", polygon, ")")))$polygon %>%
-      paste(collapse = ",")
-    additional_url <- c(additional_url, geofilter.polygon = geofilter.polygon)
+    geofilter.polygon <- 
+      tidyr::unite(geofilter.polygon, polygon, lat, lon, sep = ",") %>%
+      dplyr::mutate(polygon = paste0("(", polygon, ")")) %$% 
+      polygon %>%
+      toString()
+    additional_url <- c(
+      additional_url, 
+      geofilter.polygon = geofilter.polygon
+    )
   }
   
   # Handle format 
   if (!is.null(format)) additional_url <- c(additional_url, format = format)
   
   sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
-  url <- paste0(url, sep, paste(names(additional_url), additional_url, sep = "=", collapse = "&"))
+  url <- paste0(
+    url, 
+    sep, 
+    paste(
+      names(additional_url), 
+      additional_url, 
+      sep = "=", 
+      collapse = "&")
+  )
   if (debug) print(url)
   url
 }
 
 clean_list <- function(l) {
-  l[!sapply(l, is.null)]
+  l[!vapply(l, is.null, logical(1))]
 }
 
-# Constants
+
+get_base_url <- function(portal){
+  (portals() %>%
+     dplyr::filter(portals == portal))$base_urls
+}
+
+# Constants -------------------------------------------------------------------------------------------------------
+
 portals <- function(){
   dplyr::data_frame(
     name = c(
@@ -197,11 +243,6 @@ portals <- function(){
       "https://public.opendatasoft.com"
     )
   )
-}
-
-get_base_url <- function(portal){
-  (portals() %>%
-     dplyr::filter(portals == portal))$base_urls
 }
 
 datasets_facets <- function(){

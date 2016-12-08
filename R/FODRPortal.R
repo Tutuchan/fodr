@@ -16,50 +16,91 @@
 #' \describe{
 #'   \item{\code{\link[=portal_search]{search}}}{This method retrieves datasets from the portal.}}
 #' @export
-FODRPortal <- R6::R6Class("FODRPortal",
-                          public = list(
-                            data = NULL,
-                            portal = NULL,
-                            facets = NULL,
-                            n_datasets = NULL,
-                            sortables = NULL,
-                            themes = NULL,
-                            initialize = function(portal){
-                              self$portal <- portal
-                              self$n_datasets <- search_datasets(portal = self$portal)$data$nhits
-                              self$facets <- datasets_facets()
-                              self$sortables <- datasets_sortables()
-                              self$themes <- private$get_themes()
-                            },
-                            search = function(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL, q = NULL, lang = NULL, theme = NULL) {
-                              if (is.null(nrows)) nrows <- self$n_datasets
-                              n_datasets <- if (is.null(theme)) nrows else private$themes_freq$Freq[private$themes_freq$themes == theme]
-                              listDatasets <- search_datasets(portal = self$portal, nrows, refine, exclude, sort, q, lang)$data$datasets
-                              cat(paste(n_datasets, "datasets found ..."), "\n")
-                              self$data <- lapply(listDatasets, function(dataset){
-                                if (!is.null(theme)) if (all(dataset$metas$theme != theme)) return(NULL)
-                                FODRDataset$new(self$portal, dataset$datasetid)
-                              }) %>% clean_list()
-                              self$data
-                            },
-                            print = function() {
-                              cat("FODRPortal object\n")
-                              cat("--------------------------------------------------------------------\n")
-                              cat(paste("Portal:", self$portal, "\n"))
-                              cat(paste("Number of datasets:", self$n_datasets, "\n"))
-                              cat(paste("Themes:\n  -", paste(self$themes, collapse = "\n  - "), "\n"))
-                              cat("--------------------------------------------------------------------\n")
-                            }
-                          ),
-                          private = list(
-                            get_themes = function(){
-                              themes <- lapply(search_datasets(portal = self$portal, nrows = self$n_datasets)$data$datasets, function(dataset) {
-                                dataset$metas$theme
-                              }) %>%
-                                unlist 
-                              private$themes_freq <- as.data.frame(table(themes))
-                              themes %>%
-                                unique %>%
-                                sort
-                            },
-                            themes_freq = NULL))
+FODRPortal <- R6::R6Class(
+  "FODRPortal",
+  public = list(
+    data = NULL,
+    portal = NULL,
+    facets = NULL,
+    n_datasets = NULL,
+    sortables = NULL,
+    themes = NULL,
+    initialize = function(portal){
+      self$portal <- portal
+      self$n_datasets <- search_datasets(portal = self$portal)$data$nhits
+      self$facets <- datasets_facets()
+      self$sortables <- datasets_sortables()
+      self$themes <- private$get_themes()
+    },
+    search = function(
+      nrows = NULL, 
+      refine = NULL, 
+      exclude = NULL, 
+      sort = NULL, 
+      q = NULL, 
+      lang = NULL, 
+      theme = NULL
+    ) {
+      if (is.null(nrows)) nrows <- self$n_datasets
+      
+      n_datasets <- if (is.null(theme)) nrows else 
+        private$themes_freq$Freq[private$themes_freq$themes == theme]
+      listDatasets <- search_datasets(
+        portal = self$portal,
+        nrows, refine, 
+        exclude, 
+        sort, 
+        q, 
+        lang
+      )$data$datasets
+      cat(paste(n_datasets, "datasets found ..."), "\n")
+      self$data <- lapply(listDatasets, function(dataset){
+        if (!is.null(theme)) if (all(dataset$metas$theme != theme)) return(NULL)
+        FODRDataset$new(self$portal, dataset$datasetid)
+      }) %>% clean_list()
+      self$data
+    },
+    print = function() {
+      cat("FODRPortal object\n")
+      cat("---------------------------------------------------------------\n")
+      cat(paste("Portal:", self$portal, "\n"))
+      cat(paste("Number of datasets:", self$n_datasets, "\n"))
+      cat(paste("Themes:\n  -", paste(self$themes, collapse = "\n  - "), "\n"))
+      cat("---------------------------------------------------------------\n")
+    }
+  ),
+  private = list(
+    get_themes = function(){
+      themes <- lapply(
+        search_datasets(
+          portal = self$portal, 
+          nrows = self$n_datasets
+        )$data$datasets, function(dataset) {
+          dataset$metas$theme
+        }) %>%
+        unlist()
+      private$themes_freq <- as.data.frame(table(themes))
+      themes %>%
+        unique %>%
+        sort
+    },
+    themes_freq = NULL
+  )
+)
+
+
+#' @title initialize a portal
+#' @param portal a character
+#' 
+#' @examples 
+#' \dontrun{
+#' portal <- fodr_portal("paris")
+#' portal
+#' }
+#' 
+#' @name fodr_portal 
+#' 
+#' @export
+fodr_portal <- function(portal){
+  FODRPortal$new(portal)
+}

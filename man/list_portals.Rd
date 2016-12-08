@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_portals.R
 \name{list_portals}
 \alias{list_portals}
-\title{List the avilable portals}
+\title{list the available portals}
 \usage{
 list_portals()
 }

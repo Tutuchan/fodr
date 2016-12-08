@@ -1,4 +1,4 @@
-#' List the avilable portals
+#' list the available portals
 #' 
 #' This function displays a data.frame of the available portals.
 #' 
