@@ -155,7 +155,7 @@ FODRDataset <- R6::R6Class(
           lapply(function(x) {
             x[vapply(x, is.null, logical(1))] <- NA
             unlist(x)}) %>%
-          tibble::tibble()
+          tibble::as_tibble()
         
         # Handle GIS information
         geometry <- tres$geometry
