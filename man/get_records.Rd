@@ -59,4 +59,3 @@ votes <- fodr_dataset("paris", "resultats-des-votes-budget-participatif-2016")
 votes$get_records()
 }
 }
-

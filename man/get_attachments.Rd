@@ -17,4 +17,3 @@ horodateurs <- fodr_dataset("paris", "horodateurs-transactions-de-paiement")
 horodateurs$get_attachments(fname = "NOTICE_horodateurs.pdf")
 }
 }
-

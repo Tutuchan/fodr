@@ -26,10 +26,11 @@ This is the entry point to retrieve datasets from a portal. Initialize a \code{F
 
 \item{\code{themes}}{a character vector, the unique themes datasets on the portals can be associated with}
 }}
+
 \section{Methods}{
 
 \describe{
   \item{\code{\link[=portal_search]{search}}}{This method retrieves datasets from the portal.}}
 }
-\keyword{datasets}
 
+\keyword{datasets}

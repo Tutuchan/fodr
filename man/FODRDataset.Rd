@@ -38,6 +38,7 @@ Initialize a \code{FODRDataset} with a \code{portal} and an \code{id} using the 
 
 \item{\code{url}}{a character, the actual url sent to the API}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -45,5 +46,5 @@ Initialize a \code{FODRDataset} with a \code{portal} and an \code{id} using the 
   \item{\code{\link{get_records}}}{This method retrieves records from the dataset.}
 }
 }
-\keyword{datasets}
 
+\keyword{datasets}
