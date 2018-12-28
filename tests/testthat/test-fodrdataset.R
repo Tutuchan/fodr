@@ -9,5 +9,8 @@ test_that("get_records works", {
   dts2 <- fodr_dataset("ods", "geoflar-departements")
   expect_is(df <- dts1$get_records(nrows = 10), "tbl_df")
   expect_equal(nrow(df), 10)
-  expect_true("geo_shape" %in% names(dts2$get_records(nrow = 1)))
+  expect_true("geo_shape" %in% names(dts2$get_records(nrow = 10)))
+  if (requireNamespace("sf", quietly = TRUE)) {
+    expect_is(df[["geo_shape"]][[1]], "sfg")
+  }
 })

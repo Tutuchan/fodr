@@ -145,11 +145,10 @@ FODRDataset <- R6::R6Class(
         
         # Check if geo_shape field for GIS processing
         # The condition can't be based on the name because name can change (sometime geo_shape, sometime geo)
-        # The solution here check for the first element of every fields and see if it's a list with
+        # The solution here is to check for the first element of every fields and see if it's a list with
         # the correct format.
         geo_shape <- purrr::compact(purrr::map(fields, function(f) if (all(c("coordinates", "type") %in% names(f[[1]]))) f))[[1]]
 
-        
         # Remove fields that have too many elements
         lfields <- lapply(fields, function(x) length(unlist(x)))
         fields <- fields[lfields <= nrows]
@@ -185,9 +184,9 @@ FODRDataset <- R6::R6Class(
               switch(
                 geo_shape$type[i],
                 LineString = tidy_line_string(coords),
-                MultiLineString = lapply(coords, tidy_line_string),
+                MultiLineString = tidy_multiline_string(coords),
                 Polygon = tidy_polygon(coords),
-                MultiPolygon = lapply(coords, tidy_polygon))
+                MultiPolygon = tidy_multipolygon(coords))
             }))
           records <- dplyr::bind_cols(records, dfGeoShape)
         }
