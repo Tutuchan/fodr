@@ -1,8 +1,13 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # fodr
 
 `fodr` is an R package to access various French Open Data portals.
 
-Many of those portals use the OpenDataSoft platform to make their data available and this platform can be accessed with the [OpenDataSoft APIs](https://docs.opendatasoft.com/en/api/catalog_api.html). 
+Many of those portals use the OpenDataSoft platform to make their data
+available and this platform can be accessed with the [OpenDataSoft
+APIs](https://docs.opendatasoft.com/en/api/catalog_api.html).
 
 `fodr` wraps this API to make it easier to retrieve data directly in R.
 
@@ -10,7 +15,7 @@ Many of those portals use the OpenDataSoft platform to make their data available
 
 The `devtools` package is needed to install `fodr`:
 
-```r
+``` r
 devtools::install_github("tutuchan/fodr")
 ```
 
@@ -20,199 +25,236 @@ devtools::install_github("tutuchan/fodr")
 
 The following portals are currently available with `fodr`:
 
-| Portal                                                                             | URL                                           |  fodr slug  |
-|------------------------------------------------------------------------------------|-----------------------------------------------|:-----------:|
-| Infogreffe                                                                         | http://datainfogreffe.fr                      |  infogreffe |
-| Région Ile de France                                                               | http://data.iledefrance.fr                    | iledefrance |
-| Toulouse Métropole                                                                 | https://data.toulouse-metropole.fr            |   toulouse  |
-| Paris                                                                              | http://opendata.paris.fr                      |    paris    |
-| Issy-les-Moulineaux                                                                | http://data.issy.com                          |     issy    |
-| RATP                                                                               | http://data.ratp.fr                           |     ratp    |
-| STIF                                                                               | http://opendata.stif.info                     |     stif    |
-| STAR                                                                               | https://data.explore.star.fr                  |     star    |
-| Ministère de l'Education nationale, de l'enseignement supérieur et de la Recherche | http://data.enseignementsup-recherche.gouv.fr |    enesr    |
-| Tourisme Alpes de Haute-Provence                                                   | http://tourisme04.opendatasoft.com            |      04     |
-| Tourisme Pas-de-Calais                                                             | http://tourisme62.opendatasoft.com            |      62     |
-| Département des Hauts-de-Seine                                                     | https://opendata.hauts-de-seine.fr            |      92     |
-| ERDF                                                                               | https://data.erdf.fr                          |     erdf    |
-| OpenDataSoft Public                                                                | https://public.opendatasoft.com               |     ods     |
-| RTE                                                                                | https://opendata.rte-france.com               |     rte     |
+``` r
+library(fodr)
+list_portals()
+#> # A tibble: 15 x 3
+#>    name                                 portals   base_urls                
+#>    <chr>                                <chr>     <chr>                    
+#>  1 RATP                                 ratp      http://data.ratp.fr      
+#>  2 Région Ile-de-France                 iledefra… http://data.iledefrance.…
+#>  3 Infogreffe                           infogref… http://datainfogreffe.fr 
+#>  4 Toulouse Métropole                   toulouse  https://data.toulouse-me…
+#>  5 STAR                                 star      https://data.explore.sta…
+#>  6 Issy-les-Moulineaux                  issy      http://data.issy.com     
+#>  7 STIF                                 stif      http://opendata.stif.info
+#>  8 Paris                                paris     http://opendata.paris.fr 
+#>  9 Tourisme Alpes-Maritimes             04        http://tourisme04.openda…
+#> 10 Tourisme Pas-de-Calais               62        http://tourisme62.openda…
+#> 11 Département des Hauts-de-Seine       92        https://opendata.hauts-d…
+#> 12 Ministère de l'Education Nationale,… enesr     http://data.enseignement…
+#> 13 ERDF                                 erdf      https://data.erdf.fr     
+#> 14 RTE                                  rte       https://opendata.rte-fra…
+#> 15 OpenDataSoft Public                  ods       https://public.opendatas…
+```
 
-The portals have been identified from the [Open Data Inception](http://opendatainception.io) website. Many of these portals do not actually contain data and a large number of them are available *via* the ArcGIS Open platform. This API will be supported in a future release.
-
-You can find this list in the package with the `list_portals` function.
+The portals have been identified from the [Open Data
+Inception](http://opendatainception.io) website. Many of these portals
+do not actually contain data and a large number of them are available
+*via* the ArcGIS Open platform. This API will be supported in a future
+release.
 
 #### Retrieve datasets on a portal
 
-Use the `fodr_portal` function with the corresponding **fodr slug** to create a `FODRPortal` object:
+Use the `fodr_portal` function with the corresponding **fodr slug** to
+create a `FODRPortal` object:
 
-```r
+``` r
 library(fodr)
 portal <- fodr_portal("paris")
 portal
+#> FODRPortal object
+#> ---------------------------------------------------------------
+#> Portal: paris 
+#> Number of datasets: 249 
+#> Themes:
+#>   - Administration et Finances Publiques
+#>   - Citoyenneté
+#>   - Commerces
+#>   - Culture
+#>   - Environnement
+#>   - Equipements, Services, Social
+#>   - Mobilité et Espace Public
+#>   - Services
+#>   - Urbanisme et Logements 
+#> ---------------------------------------------------------------
 ```
 
-```
-FODRPortal object
---------------------------------------------------------------------
-Portal: paris 
-Number of datasets: 175 
-Themes:
-  - Administration
-  - Citoyens
-  - Commerces
-  - Culture
-  - Déplacements
-  - Environnement
-  - Finances
-  - Services
-  - Urbanisme 
---------------------------------------------------------------------
-```
+The `search` method allows you to find datasets on this portal (see the
+function documentation for more information). By default, and contrary
+to the Open Data Soft API, all elements satisfying the search are
+returned.
 
-The `search` method allows you to find datasets on this portal (see the function documentation for more information). By default, and contrary to the Open Data Soft API, all elements satisfying the search are returned. 
+Let’s look at the datasets that contain the word *vote*:
 
-Let's look at the datasets that contain the word *vote*:
-
-```r
+``` r
 list_datasets <-  portal$search(q = "vote")
+#> 36 datasets found ...
 list_datasets[[1]]
-```
-
-```
-FODRDataset object
---------------------------------------------------------------------
-Dataset id: budgets-votes-annexes 
-Theme: Finances 
-Keywords: budget 
-Publisher: Mairie de Paris  
---------------------------------------------------------------------
-Number of records: 4868 
-Number of files: 0 
-Modified: 2016-02-18 
-Facets: exercice_comptable, budget, section_budgetaire_i_f, sens_depense_recette, type_d_operation_r_o_i_m, type_du_vote, chapitre_budgetaire_cle, chapitre_budgetaire_texte 
-Sortables: exercice_comptable 
---------------------------------------------------------------------
+#> FODRDataset object
+#> ---------------------------------------------------------------
+#> Dataset id: secteurs-des-bureaux-de-vote 
+#> Theme: Citoyenneté 
+#> Keywords: bureau de vote, elections, votes, suffrages 
+#> Publisher: Mairie de Paris / Direction de la Démocratie, des Citoyens et des Territoires 
+#> ---------------------------------------------------------------
+#> Number of records: 896 
+#> Number of files: 0 
+#> Modified: 2017-03-30 
+#> Sortables: objectid, nbr_elect_f, nbr_elect_e_m, nbr_elect_e_e, nbr_elect_l12, arrondissement, num_bv 
+#> ---------------------------------------------------------------
+#> Description:
+#> Sectionnement des bureaux de vote en vigueur à partir du 01 mars 2017Donnée initialement en NTF Lambert Zone I(EPSG : 27561)et reprojetée en RGF 93 Lambert 93(EPSG : 2154) Représentation du sectionnement des bureaux de vote, applicable à partir du 1emars 2017.  La représentation du sectionnement ne se calque pas sur le bâti ou sur le parcellaire car c’est le rattachement au point-adresse qui est pris en considération.
+#> ---------------------------------------------------------------
 ```
 
 #### Retrieve datasets by theme
 
-```r
+``` r
+library(magrittr)
 list_culture_datasets <-  portal$search(theme = "Culture")
+#> 249 datasets found ...
 lapply(list_culture_datasets, function(dataset) dataset$info$metas$theme) %>% 
   unlist() %>% 
   unique()%>% 
   sort()
+#> [1] "Culture"
 ```
 
 ## Datasets
 
 #### Retrieve records on a dataset
 
-```r
+``` r
 dts <- list_datasets[[1]]
 dts$get_records()
-```
-
-```
-Source: local data frame [4,868 x 11]
-
-   chapitre_budgetaire_cle nature_budgetaire_cle sens_depense_recette budget credits_votes_pmt                   chapitre_budgetaire_texte
-                     <chr>                 <chr>                <chr>  <chr>             <dbl>                                       <chr>
-1                      022                   022             Dépenses M4 TAM             40000                     DEPENSES IMPREVUES (SE)
-2                      042                  6811             Dépenses M4 TAM           7490000 DOTATIONS AUX AMORTISSEMENTS ET PROVISIONS.
-3                      011                  6026             Dépenses M4 TAM             10000                 CHARGES À CARACTERE GENERAL
-4                      011                 61521             Dépenses M4 TAM            120000                 CHARGES À CARACTERE GENERAL
-5                      011                   618             Dépenses M4 TAM             70000                 CHARGES À CARACTERE GENERAL
-6                      011                  6288             Dépenses M4 TAM             25000                 CHARGES À CARACTERE GENERAL
-7                      012                  6414             Dépenses M4 TAM           4790000     CHARGES DE PERSONNEL ET FRAIS ASSIMILES
-8                      012                  6478             Dépenses M4 TAM             90000     CHARGES DE PERSONNEL ET FRAIS ASSIMILES
-9                       65                   658             Dépenses M4 TAM               500         AUTRES CHARGES DE GESTION COURANTE.
-10                      67                  6712             Dépenses M4 TAM             60000                    CHARGES EXCEPTIONNELLES.
-..                     ...                   ...                  ...    ...               ...                                         ...
-Variables not shown: nature_budgetaire_texte <chr>, type_du_vote <chr>, type_d_operation_r_o_i_m <chr>, section_budgetaire_i_f <chr>, exercice_comptable
+#> # A tibble: 896 x 14
+#>    shape_area objectid nbr_elect_l12 arrondissement validite shape_len
+#>         <dbl>    <int>         <int>          <int> <chr>        <dbl>
+#>  1          0        4             0             19 oui              0
+#>  2          0        5             0             19 oui              0
+#>  3          0        9             0             19 oui              0
+#>  4          0       10             0             19 oui              0
+#>  5          0       12             0             19 oui              0
+#>  6          0       17             0             19 oui              0
+#>  7          0       19             0             19 oui              0
+#>  8          0       21             0             19 oui              0
+#>  9          0       22             0             19 non              0
+#> 10          0       29             0             19 non              0
+#> # ... with 886 more rows, and 8 more variables: nbr_elect_f <int>,
+#> #   nbr_elect_e_m <int>, nbr_elect_e_e <int>, num_bv <int>, id_bv <chr>,
+#> #   lng <dbl>, lat <dbl>, geo_shape <list>
 ```
 
 #### Filter records
 
-```r
+``` r
 dts <- list_datasets[[1]]
-records <- dts$get_records(nrows = dts$info$metas$records_count, refine = list(type_du_vote = "Décision modif. 2"))
-records$type_du_vote
-```
-
-```
- [1] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
- [8] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[15] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[22] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[29] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[36] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[43] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[50] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[57] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[64] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[71] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[78] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[85] "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2" "Décision modif. 2"
-[92] "Décision modif. 2"
+dts$get_records(nrows = dts$info$metas$records_count, refine = list(validite = "oui"))
+#> # A tibble: 54 x 14
+#>    shape_area objectid nbr_elect_l12 arrondissement validite shape_len
+#>         <dbl>    <int>         <int>          <int> <chr>        <dbl>
+#>  1          0        4             0             19 oui              0
+#>  2          0        5             0             19 oui              0
+#>  3          0        9             0             19 oui              0
+#>  4          0       10             0             19 oui              0
+#>  5          0       12             0             19 oui              0
+#>  6          0       17             0             19 oui              0
+#>  7          0       19             0             19 oui              0
+#>  8          0       21             0             19 oui              0
+#>  9          0       33             0             19 oui              0
+#> 10          0       45             0             19 oui              0
+#> # ... with 44 more rows, and 8 more variables: nbr_elect_f <int>,
+#> #   nbr_elect_e_m <int>, nbr_elect_e_e <int>, num_bv <int>, id_bv <chr>,
+#> #   lng <dbl>, lat <dbl>, geo_shape <list>
 ```
 
 #### Download attachments
 
-Some datasets have attached files in a pdf, docx, xlsx, ... format. These can be retrieved using the `get_attachments` method:
+Some datasets have attached files in a pdf, docx, xlsx, … format. These
+can be retrieved using the `get_attachments` method:
 
-```r
+``` r
 dts <- fodr_dataset("erdf", "coefficients-des-profils")
-dts$get_attachments("DictionnaireProfils.xlsx")
+dts$get_attachments("DictionnaireProfils_1JUIL18.xlsb")
 ```
 
 ## GIS data
 
 Some datasets have geographical information on each data point.
 
-For these datasets, two additional columns will be present when fetching records: `lng` and `lat` that correspond to the longitude and latitude of the coordinates of the data point. Additionally, if there are shapes associated to data points (polygons or linestrings for example), they will be stored in the `geo_shape` column as a list of `data.frame`s with the same two columns `lng` and `lat`.
+For these datasets, two additional columns will be present when fetching
+records: `lng` and `lat` that correspond to the longitude and latitude
+of the coordinates of the data point. Additionally, if there are shapes
+associated to data points (polygons or linestrings for example), they
+will be stored in the `geo_shape` column either as a list of
+`data.frame`s with the same two columns `lng` and `lat` or in a list
+`sf` objects if `sf` package is already installed. The latter allows a
+straigtforward way to plot geometric data.
 
 See for example the following dataset:
 
-```r
+``` r
 dts <- fodr_dataset("stif", "gares-routieres-idf")
 dfRecords <- dts$get_records(nrows = 10)
 dfRecords
+#> # A tibble: 10 x 14
+#>    gr_id dpt_id lda_nom gare_nom zdl_id insee_txt gr_nom comm_nom zdl_nom
+#>    <int>  <int> <chr>   <chr>     <int> <chr>     <chr>  <chr>    <chr>  
+#>  1    22     95 Argent… ARGENTE…  47875 95018     Argen… Argente… Argent…
+#>  2   183     77 Combs-… COMBS-L…  45771 77122     Combs… Combs-l… Combs-…
+#>  3   567     77 Nemour… NEMOURS…  43245 77431     Nemou… Saint-P… Nemour…
+#>  4   338     78 Houill… HOUILLE…  47439 78311     Houil… Houilles Houill…
+#>  5   854     91 Vigneu… VIGNEUX…  45735 91657     Vigne… Vigneux… Vigneu…
+#>  6   571     94 Nogent… NOGENT-…  46552 94058     Nogen… Le Perr… Nogent…
+#>  7   615     95 Persan… PERSAN-…  43178 95487     Persa… Persan   Persan…
+#>  8   865     77 Villep… VILLEPA…  46725 77294     Ville… Mitry-M… Villep…
+#>  9   758     93 Saint-… SAINT-O…  43203 93070     Saint… Saint-O… Saint-…
+#> 10   690     77 Provin… PROVINS   47181 77379     Provi… Provins  Provin…
+#> # ... with 5 more variables: acces_pmr <chr>, lda_id <int>, lng <dbl>,
+#> #   lat <dbl>, geo_shape <list>
 ```
-```
-Source: local data frame [10 x 6]
 
-                           gro_nom type_gr gro_ide      lng      lat       geo_shape
-                             <chr>   <chr>   <int>    <dbl>    <dbl>          <list>
-1             Gare SNCF Argenteuil      GR      80 2.257681 48.94618  <tbl_df [9,2]>
-2  Gare SNCF la Ferté sous Jouarre      GR      28 3.124543 48.95055 <tbl_df [12,2]>
-3      Gare SNCF Enghien les Bains      GR      47 2.305979 48.97374  <tbl_df [8,2]>
-4      Gare RER Survilliers Fosses      GR      57 2.525156 49.09942  <tbl_df [7,2]>
-5     Gare RER Neuville Université      GR      61 2.079814 49.01484 <tbl_df [17,2]>
-6            Gare RER Sartrouville      GR      98 2.158423 48.93758  <tbl_df [6,2]>
-7                  Gare RER Yerres      GR     174 2.483177 48.70694  <tbl_df [9,2]>
-8                  Gare RER Brunoy      GR     175 2.505788 48.69948  <tbl_df [5,2]>
-9        Gare RER Nogent sur Marne      GR     202 2.472381 48.83457 <tbl_df [18,2]>
-10     Gare RER Boissy Saint Léger      GR     210 2.505877 48.75369 <tbl_df [12,2]>
-```
+You can then use [leaflet](http://rstudio.github.io/leaflet/) to easily
+plot this data on a map, either using data points:
 
-You can then use [leaflet](http://rstudio.github.io/leaflet/) to easily plot this data on a map:
-```r
+``` r
 library(leaflet)
 leaflet(dfRecords) %>% 
   addProviderTiles("CartoDB.Positron") %>% 
-  addMarkers(popup = ~gro_nom)
+  addMarkers(popup = ~gare_nom)
 ```
 
+![leaflet
+example](inst/images/Screenshot%202018-12-28%2015-42-00.png?raw=true
+"Screenshot leaflet example")
 
-## License of the data 
+or using the `geo_shape` column:
 
-Most of the data is available under the [Open Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence) ([english PDF version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf)) but double check if you are unsure.
+``` r
+library(sf)
+dfRecords[1,] %>% 
+  st_as_sf() %>% 
+  leaflet() %>% 
+  addProviderTiles("CartoDB.Positron") %>% 
+  addPolygons(label = ~gare_nom)
+```
+
+![leaflet
+example](inst/images/Screenshot%202018-12-28%2015-43-36.png?raw=true
+"Screenshot leaflet example")
+
+## License of the data
+
+Most of the data is available under the [Open
+Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence)
+([english PDF
+version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf))
+but double check if you are unsure.
 
 ## TODO
 
-+ handle portals that require authentification,
-+ handle ArcGIS-powered portals,
-+ possibly handle navitia.io portals,
-+ ?
+  - handle portals that require authentification,
+  - handle ArcGIS-powered portals,
+  - possibly handle navitia.io portals,
+  - ?
