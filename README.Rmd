@@ -1,0 +1,147 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# fodr
+
+`fodr` is an R package to access various French Open Data portals.
+
+Many of those portals use the OpenDataSoft platform to make their data available and this platform can be accessed with the [OpenDataSoft APIs](https://docs.opendatasoft.com/en/api/catalog_api.html). 
+
+`fodr` wraps this API to make it easier to retrieve data directly in R.
+
+## Installation
+
+The `devtools` package is needed to install `fodr`:
+
+```r
+devtools::install_github("tutuchan/fodr")
+```
+
+## Portals
+
+#### Available portals
+
+The following portals are currently available with `fodr`:
+
+```{r}
+library(fodr)
+list_portals()
+```
+
+The portals have been identified from the [Open Data Inception](http://opendatainception.io) website. Many of these portals do not actually contain data and a large number of them are available *via* the ArcGIS Open platform. This API will be supported in a future release.
+
+#### Retrieve datasets on a portal
+
+Use the `fodr_portal` function with the corresponding **fodr slug** to create a `FODRPortal` object:
+
+```{r}
+library(fodr)
+portal <- fodr_portal("paris")
+portal
+```
+
+The `search` method allows you to find datasets on this portal (see the function documentation for more information). By default, and contrary to the Open Data Soft API, all elements satisfying the search are returned. 
+
+Let's look at the datasets that contain the word *vote*:
+
+```{r}
+list_datasets <-  portal$search(q = "vote")
+list_datasets[[1]]
+```
+
+#### Retrieve datasets by theme
+
+```{r}
+library(magrittr)
+list_culture_datasets <-  portal$search(theme = "Culture")
+lapply(list_culture_datasets, function(dataset) dataset$info$metas$theme) %>% 
+  unlist() %>% 
+  unique()%>% 
+  sort()
+```
+
+## Datasets
+
+#### Retrieve records on a dataset
+
+```{r}
+dts <- list_datasets[[1]]
+dts$get_records()
+```
+
+#### Filter records
+
+```{r}
+dts <- list_datasets[[1]]
+dts$get_records(nrows = dts$info$metas$records_count, refine = list(validite = "oui"))
+```
+
+#### Download attachments
+
+Some datasets have attached files in a pdf, docx, xlsx, ... format. These can be retrieved using the `get_attachments` method:
+
+```{r, eval=FALSE}
+dts <- fodr_dataset("erdf", "coefficients-des-profils")
+dts$get_attachments("DictionnaireProfils_1JUIL18.xlsb")
+```
+
+## GIS data
+
+Some datasets have geographical information on each data point.
+
+For these datasets, two additional columns will be present when fetching records: `lng` and `lat` that correspond to the longitude and latitude of the coordinates of the data point. Additionally, if there are shapes associated to data points (polygons or linestrings for example), they will be stored in the `geo_shape` column either as a list of `data.frame`s with the same two columns `lng` and `lat` or in a list `sf` objects if `sf` package is already installed.
+The latter allows a straigtforward way to plot geometric data.
+
+See for example the following dataset:
+
+```{r}
+dts <- fodr_dataset("stif", "gares-routieres-idf")
+dfRecords <- dts$get_records(nrows = 10)
+dfRecords
+```
+
+You can then use [leaflet](http://rstudio.github.io/leaflet/) to easily plot this data on a map, either using data points:
+
+```{r, eval=FALSE}
+library(leaflet)
+leaflet(dfRecords) %>% 
+  addProviderTiles("CartoDB.Positron") %>% 
+  addMarkers(popup = ~gare_nom)
+```
+
+![leaflet example](inst/images/Screenshot 2018-12-28 15-42-00.png?raw=true "Screenshot leaflet example")
+
+or using the `geo_shape` column:
+ 
+```{r, eval=FALSE}
+library(sf)
+dfRecords[1,] %>% 
+  st_as_sf() %>% 
+  leaflet() %>% 
+  addProviderTiles("CartoDB.Positron") %>% 
+  addPolygons(label = ~gare_nom)
+```
+
+![leaflet example](inst/images/Screenshot 2018-12-28 15-43-36.png?raw=true "Screenshot leaflet example")
+
+## License of the data 
+
+Most of the data is available under the [Open Licence](https://www.etalab.gouv.fr/licence-ouverte-open-licence) ([english PDF version](https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Open_Licence.pdf)) but double check if you are unsure.
+
+## TODO
+
++ handle portals that require authentification,
++ handle ArcGIS-powered portals,
++ possibly handle navitia.io portals,
++ ?

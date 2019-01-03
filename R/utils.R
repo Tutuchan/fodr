@@ -73,20 +73,72 @@ get_sortables <- function(fields){
 tidy_polygon <- function(x) {
   y <- x[[1]] %>% 
     purrr::transpose()
-  tibble::tibble(
-    lng = unlist(y[[1]]),
-    lat = unlist(y[[2]])
-  )
+  if (requireNamespace("sf", quietly = TRUE)) {
+    mat <- matrix(unlist(y), ncol = 2)
+    colnames(mat) <- c("lng", "lat")
+    sf::st_polygon(list(mat))
+  } else {
+    tibble::tibble(
+      lng = unlist(y[[1]]),
+      lat = unlist(y[[2]])
+    ) 
+  }
+}
+
+# Transform MultiPolygon elements in the geo_shape column
+tidy_multipolygon <- function(x) {
+  y <- lapply(x, function(xx) purrr::transpose(xx[[1]]))
+  if (requireNamespace("sf", quietly = TRUE)) {
+    mat <- lapply(y, function(yy) {
+      res <- matrix(unlist(yy), ncol = 2)
+      colnames(res) <- c("lng", "lat")
+      res
+    })
+    sf::st_polygon(mat)
+  } else {
+    lapply(y, function(yy) {
+      tibble::tibble(
+        lng = unlist(yy[[1]]),
+        lat = unlist(yy[[2]])
+      ) 
+    })
+  }
 }
 
 # Transform LineString elements in the geo_shape column
 tidy_line_string <- function(x) {
   y <- x %>% 
     purrr::transpose()
-  tibble::tibble(
-    lng = unlist(y[[1]]),
-    lat = unlist(y[[2]])
-  )
+  if (requireNamespace("sf", quietly = TRUE)) {
+    x <- matrix(unlist(y), ncol = 2)
+    colnames(x) <- c("lng", "lat")
+    sf::st_linestring(x)
+  } else {
+    tibble::tibble(
+      lng = unlist(y[[1]]),
+      lat = unlist(y[[2]])
+    )
+  }
+}
+
+# Transform LineString elements in the geo_shape column
+tidy_multiline_string <- function(x) {
+  y <- lapply(x, function(xx) purrr::transpose(xx))
+  if (requireNamespace("sf", quietly = TRUE)) {
+    mat <- lapply(y, function(yy) {
+      res <- matrix(unlist(yy), ncol = 2)
+      colnames(res) <- c("lng", "lat")
+      res
+    })
+    sf::st_multilinestring(list(mat))
+  } else {
+    lapply(y, function(yy) {
+      tibble::tibble(
+        lng = unlist(yy[[1]]),
+        lat = unlist(yy[[2]])
+      ) 
+    })
+  }
 }
 
 # Add additional parameters to the url
@@ -189,7 +241,7 @@ clean_list <- function(l) {
 get_base_url <- function(portal){
   (portals() %>%
      dplyr::filter(portals == portal)
-   )$base_urls
+  )$base_urls
 }
 
 # Constants -------------------------------------------------------------------------------------------------------
