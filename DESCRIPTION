@@ -1,7 +1,7 @@
 Package: fodr
 Type: Package
 Title: Interact with French open data services
-Version: 0.1.2
+Version: 0.2.0
 Authors@R: person("Pierre", "Formont", email = "pierre.formont@gmail.com",
                   role = c("aut", "cre"))
 Description: Connect to various French open data providers and fetch the
@@ -19,4 +19,7 @@ Imports:
     R6,
     tibble,
     tidyr
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 6.1.1
+Suggests: 
+    testthat
+Date: 2018-12-26

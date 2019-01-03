@@ -9,4 +9,3 @@ list_portals()
 \description{
 This function displays a data.frame of the available portals.
 }
-

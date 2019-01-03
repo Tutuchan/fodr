@@ -144,8 +144,11 @@ FODRDataset <- R6::R6Class(
         )
         
         # Check if geo_shape field for GIS processing
-        geo_shape <- if ("geo_shape" %in% names(fields)) fields$geo_shape else 
-          NULL
+        # The condition can't be based on the name because name can change (sometime geo_shape, sometime geo)
+        # The solution here check for the first element of every fields and see if it's a list with
+        # the correct format.
+        geo_shape <- purrr::compact(purrr::map(fields, function(f) if (all(c("coordinates", "type") %in% names(f[[1]]))) f))[[1]]
+
         
         # Remove fields that have too many elements
         lfields <- lapply(fields, function(x) length(unlist(x)))
@@ -155,7 +158,7 @@ FODRDataset <- R6::R6Class(
           lapply(function(x) {
             x[vapply(x, is.null, logical(1))] <- NA
             unlist(x)}) %>%
-          tibble::tibble()
+          tibble::as_tibble()
         
         # Handle GIS information
         geometry <- tres$geometry
@@ -170,7 +173,7 @@ FODRDataset <- R6::R6Class(
           records <- dplyr::bind_cols(records, dfLonlat)
         }
         
-        if (!is.null(geo_shape)) {
+        if (length(geo_shape) > 0) {
           geo_shape  <- geo_shape %>% 
             purrr::transpose()
           geo_shape$type <- unlist(geo_shape$type)

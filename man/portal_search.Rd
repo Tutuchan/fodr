@@ -44,4 +44,3 @@ portal$search(nrows = NULL, refine = NULL, exclude = NULL, sort = NULL,
 q = NULL, lang = NULL, theme = NULL)
 }
 }
-
