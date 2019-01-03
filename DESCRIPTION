@@ -2,8 +2,10 @@ Package: fodr
 Type: Package
 Title: Interact with French open data services
 Version: 0.2.0.9001
-Authors@R: person("Pierre", "Formont", email = "pierre.formont@gmail.com",
-                  role = c("aut", "cre"))
+Authors@R: as.person(c(
+    "Pierre Formont <pierre.formont@gmail.com> [aut, cre]",
+    "Denis Roussel <deroussel@gmail.com> [aut]"
+  ))
 Description: Connect to various French open data providers and fetch the
     available data.
 URL: https://github.com/Tutuchan/fodr
